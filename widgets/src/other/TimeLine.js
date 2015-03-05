@@ -1,3 +1,6 @@
+/*
+https://github.com/jiahuang/d3-timeline
+*/
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -19,6 +22,8 @@
     TimeLine.prototype = Object.create(SVGWidget.prototype);
     TimeLine.prototype.implements(ITimeLine.prototype);
 
+    TimeLine.prototype.publish("paletteID", "Dark2", "set", "Palette ID", TimeLine.prototype._palette.switch());
+
     TimeLine.prototype.enter = function (domNode, element) {
         this.svg = element.append("g");	
     };
@@ -26,7 +31,11 @@
     TimeLine.prototype.update = function (domNode, element) {
         var context = this;
  	    
+        this._palette = this._palette.switch(this._paletteID);
+
         this.chart = d3.timeline()
+            .colors( this._palette )
+            .colorProperty('fruit')
             .click(function (d, i, datum) {
                 //alert(datum.label);
                 alert("Clicked: ");
