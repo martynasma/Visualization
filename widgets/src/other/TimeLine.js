@@ -23,6 +23,8 @@ https://github.com/jiahuang/d3-timeline
     TimeLine.prototype.implements(ITimeLine.prototype);
 
     TimeLine.prototype.publish("paletteID", "Dark2", "set", "Palette ID", TimeLine.prototype._palette.switch());
+    TimeLine.prototype.publish("margin", "", "object", "margin object");
+    //TimeLine.prototype.publish("colorProperty", "fruit", "string", "color property"); // DO WE EVEN NEED THIS???
 
     TimeLine.prototype.enter = function (domNode, element) {
         this.svg = element.append("g");	
@@ -37,10 +39,9 @@ https://github.com/jiahuang/d3-timeline
             //.stack() // toggles graph stacking
             .margin({left:70, right:30, top:0, bottom:0})
             .colors( this._palette )
-            .colorProperty('fruit')
+            //.colorProperty(this.colorProperty()) ???? dont need??
             .click(function (d, i, datum) {
-                //alert(datum.label);
-                alert("Clicked: ");
+                alert('Clicked: '+datum.label);
             })
         ;
         this.svg.attr("width", this.width()).attr("height","200")
