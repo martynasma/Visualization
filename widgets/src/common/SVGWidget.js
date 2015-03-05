@@ -63,8 +63,10 @@
             .attr("height", this._size.height)
         ;
         this.pos({
-            x: this._size.width / 2,
-            y: this._size.height / 2
+            //x: this._size.width / 2,
+            //y: this._size.height / 2
+            x: 0,
+            y: 0
         });
         return this;
     };

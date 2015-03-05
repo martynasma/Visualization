@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="../widgets/lib/requirejs/require.js"></script>
+    <script src="../widgets/config.js"></script>
+    <script>
+        requirejs.config({
+            baseUrl: "../widgets"
+        });
+    </script>
+        
+    <style>
+        body {
+            background-color: #fafafa;
+        }
+    </style>
+    </head>
+    <body>
+        <script>  
+            require(["d3/d3"], function (d3) {
+                 require(["src/other/TimeLine", "d3/d3", "lib/timeline/d3-timeline"], function (TimeLine, d3) {
+                     var timelineWidget = new TimeLine()
+                         .size({width:500,height:75})
+                         .target("widget-wrapper")
+                         .testData()
+                         //.paletteID("hpcc20")
+                         .render()  
+                         //.click(function(d) { console.log('Override Click: ' + JSON.stringify(d)); }) // must be last, does not return widget object
+                     ;
+                 });
+             });
+        </script>
+        <div id="widget-wrapper"></div>
+    </body>
+</html>
