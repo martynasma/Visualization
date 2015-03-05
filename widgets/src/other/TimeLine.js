@@ -41,8 +41,9 @@ https://github.com/jiahuang/d3-timeline
             .colors( this._palette )
             //.colorProperty(this.colorProperty()) ???? dont need??
             .click(function (d, i, datum) {
-                alert('Clicked: '+datum.label);
+               alert('Clicked '+datum.label) //TODO get working
             })
+
         ;
         this.svg.attr("width", this.width()).attr("height","200")
         .datum(this._data).call(this.chart);

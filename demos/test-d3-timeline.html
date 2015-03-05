@@ -26,7 +26,7 @@
                          .testData()
                          //.paletteID("hpcc20")
                          .render()  
-                         //.click(function(d) { console.log('Override Click: ' + JSON.stringify(d)); }) // must be last, does not return widget object
+                         .click(function(d,i,datum) { alert('Clicked2: '+datum.label); }) // must be last, does not return widget object
                      ;
                  });
              });
