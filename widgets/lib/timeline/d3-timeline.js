@@ -186,7 +186,7 @@
             })
           ;
 
-          if (rowSeperatorsColor) {
+          if (rowSeperatorsColor && typeof yAxisMapping[index] != "undefined") {
             var lineYAxis = ( itemHeight + itemMargin / 2 + margin.top + (itemHeight + itemMargin) * yAxisMapping[index]);
             gParent.append("svg:line")
               .attr("class", "row-seperator")
@@ -200,7 +200,7 @@
           }
 
           // add the label
-          if (hasLabel) {
+          if (hasLabel && typeof yAxisMapping[index] != "undefined") {
             gParent.append("text")
               .attr("class", "timeline-label")
               .attr("transform", "translate("+ 0 +","+ (itemHeight * 0.75 + margin.top + (itemHeight + itemMargin) * yAxisMapping[index])+")")

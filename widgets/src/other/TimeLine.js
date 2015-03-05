@@ -34,6 +34,8 @@ https://github.com/jiahuang/d3-timeline
         this._palette = this._palette.switch(this._paletteID);
 
         this.chart = d3.timeline()
+            //.stack() // toggles graph stacking
+            .margin({left:70, right:30, top:0, bottom:0})
             .colors( this._palette )
             .colorProperty('fruit')
             .click(function (d, i, datum) {
@@ -41,7 +43,7 @@ https://github.com/jiahuang/d3-timeline
                 alert("Clicked: ");
             })
         ;
-        this.svg.attr("width", this.width())
+        this.svg.attr("width", this.width()).attr("height","200")
         .datum(this._data).call(this.chart);
 
 
