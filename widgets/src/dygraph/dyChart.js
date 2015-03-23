@@ -90,11 +90,16 @@ http://dygraphs.com/options.html
         // might not need to do default if we just leave it blank we got tp program slightly diff and make this more like the below if statements and inject
         chartOptions['axes'] = {};
         for (var i = 0, j = this.axesList().length; i < j; i++) {
-
+        	var val = [];
             //var val['drawAxis'] = typeof this.drawAxis()[this._axesList[i]] !=='undefined' ? this.drawAxis()[this._axesList[i]] : defaultConfig['axes'][this._axesList[i]],
-            
+            console.log(this.drawAxis()[this._axesList[i]]);
+            console.log(this._axesList[i]);
+            console.log('-------------------------------')
+            //var val['drawAxis'] = this.drawAxis()[this._axesList[i]];
+
             chartOptions['axes'][this._axesList[i]] = {
-                'drawAxis': val    
+                //'drawAxis': val['drawAxis']
+                'drawAxis': true    
             }
         }
         
