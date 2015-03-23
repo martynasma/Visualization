@@ -148,10 +148,23 @@
                     }
                     break;
                 case "boolean":
-                    _ = Boolean(_);
+                    console.log(typeof _)
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            _[key] = Boolean(_[key]); // tis is correct
+                        }
+                    } else {
+                        _ = Boolean(_);
+                    }
                     break;
                 case "number":
-                    _ = Number(_);
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            _[key] = Number(_[key]);
+                        }
+                    } else {
+                        _ = Number(_);
+                    }
                     break;
                 case "string":
                     _ = String(_);

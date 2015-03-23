@@ -2,6 +2,8 @@
 http://dygraphs.com/css.html
 http://dygraphs.com/options.html
 */
+
+// write documentation on how you can always access the underlying object and run commands on it by doing widget._chart ....
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -17,10 +19,14 @@ http://dygraphs.com/options.html
         this._tag = "div";
 
         this.chart = null;
+        this._chart = null;
+
+
 
     };
     dyChart.prototype = Object.create(HTMLWidget.prototype);
-    
+    //dyChart.prototype.implements(IDygraph.prototype);
+
     dyChart.prototype._palette = Palette.ordinal("default"); // or impliment INDChart ??
     dyChart.prototype.publish("paletteID", "default", "set", "Palette ID", dyChart.prototype._palette.switch());
     
@@ -41,11 +47,14 @@ http://dygraphs.com/options.html
     dyChart.prototype.publish("clickCallback", null, "function", "???"); // canvas click
     dyChart.prototype.publish("pointClickCallback", null, "function", "???"); // data-point click
 
-    
+    dyChart.prototype.publish("drawAxis", true, "boolean", "???");
+
+    dyChart.prototype.publish("axesList", ['x','y','y1'], "array", "???");
+
     dyChart.prototype.enter = function (domNode, element) {
 
         this.chart = new Dygraph(domNode,[[0]],{width:this.width(),height:this.height()}); // our weird way of init with 0 data ... width and height must be set on init
- 
+        
     };
     
     dyChart.prototype.getChartOptions = function () {
@@ -65,8 +74,29 @@ http://dygraphs.com/options.html
             'labelsDivStyles' : {
                 'textAlign' : 'right'
             },
-            'showRangeSelector' : this.showRangeSelector()
+            'showRangeSelector' : this.showRangeSelector(),
+          /*'axes': {
+            'y': {
+              drawAxis: this.drawAxis().y,
+              //drawGrid: this.drawGrid().x
+            },
+            'x': {
+              drawAxis: this.drawAxis().x,
+              //drawGrid: this.drawGrid().x
+            }
+          }*/
         };
+
+        // might not need to do default if we just leave it blank we got tp program slightly diff and make this more like the below if statements and inject
+        chartOptions['axes'] = {};
+        for (var i = 0, j = this.axesList().length; i < j; i++) {
+
+            //var val['drawAxis'] = typeof this.drawAxis()[this._axesList[i]] !=='undefined' ? this.drawAxis()[this._axesList[i]] : defaultConfig['axes'][this._axesList[i]],
+            
+            chartOptions['axes'][this._axesList[i]] = {
+                'drawAxis': val    
+            }
+        }
         
         if (colors.length > 0) { chartOptions.colors = colors; }
         
@@ -90,6 +120,10 @@ http://dygraphs.com/options.html
         this._palette = this._palette.switch(this._paletteID);
         
         this.chart.updateOptions(this.getChartOptions());
+
+        //console.log('this');
+        //console.log(this);
+        console.log(this.getChartOptions());
 
     };
 
