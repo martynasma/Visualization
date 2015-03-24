@@ -177,6 +177,7 @@
                                 ;
                                 break;
                             case "number":
+                            case "object":
                             case "string":
                                 input = td.append("input")
                                     .attr("class", "input")
@@ -289,10 +290,18 @@
                 var input = d3.select(this);
                 switch (d.type) {
                     case "boolean":
-                        input.node().checked = context._data[d.id]();
+                        if (typeof context._data[d.id]() === 'object') {
+                            input.node().value = JSON.stringify(context._data[d.id]());
+                        } else {                       
+                            input.node().checked = context._data[d.id]();
+                        }
                         break
                     case "html-color":
-                        input.node().value = context._data[d.id]();
+                        if (typeof context._data[d.id]() === 'object') {
+                            input.node().value = JSON.stringify(context._data[d.id]());
+                        } else {                    
+                            input.node().value = context._data[d.id]();
+                        }
                         break;
                     case "array":
                         input.node().value = JSON.stringify(context._data[d.id](), null, "  ");
@@ -307,7 +316,11 @@
                     case "string":
                     case "set":
                     default:
-                        input.node().value = context._data[d.id]();
+                        if (typeof context._data[d.id]() === 'object') {
+                            input.node().value = JSON.stringify(context._data[d.id]());
+                        } else {
+                            input.node().value = context._data[d.id]();
+                        }
                         break;
                 }
             })

@@ -5,6 +5,7 @@
     <script src="../widgets/lib/requirejs/require.js"></script>
     <script src="../widgets/config.js"></script>
     <script>
+        var g_widget = null;
         requirejs.config({
             baseUrl: "../widgets"
         });
@@ -29,17 +30,20 @@
                   //rollPeriod: 14,
                   //customBars: true,
                   //ylabel: 'Temperature (F)',
+                .axisLabelWidth({x:100})
                 .render()
             ;
 
-            console.log(dc.drawAxis());
+            //console.log(dc.drawAxis());
             //console.log(dc.xaxis.titlexxx());
             //console.log(dc.xaxis());
             //var x = {};
             //x['xyz.abc'] = 2;
             //console.log(x);
-
+            var s = 0;
+            var xyz = setInterval(function() { if (s>50) { clearInterval(xyz); } else { s++; }  dc._chart.updateOptions({'pointSize':s}); console.log(s); },1000);
             //console.log(dc.axis().test123xxx());
+            g_widget = dc;
         });
     </script>
 </body>

@@ -9,6 +9,7 @@
     <script src="../widgets/lib/requirejs/require.js"></script>
     <script src="../widgets/config.js"></script>
     <script>
+    var g_widget = null;
         requirejs.config({
             baseUrl: "../widgets"
         });
@@ -165,6 +166,7 @@
                     })
                 ;
             }
+            
             testWidget = function (widgetPath) {
                 require([widgetPath], function (Widget) {
                     document.getElementById("source").innerHTML = "";
@@ -175,6 +177,7 @@
                             displayProperties(widget);
                         })
                     ;
+                    g_widget = sourceWidget;
                 });
             }
             testWidget(document.getElementById("widgetSelect").value);
@@ -182,4 +185,3 @@
     </script>
 </body>
 </html>
-   

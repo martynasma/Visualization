@@ -133,22 +133,29 @@
             if (!arguments.length) return this["_" + id];
             switch (type) {
                 case "set":
-                    if (!set || set.indexOf(_) < 0) {
-                        console.log("Invalid value for '" + id + "':  " + _);
+                    if (typeof _ === "object") {            
+                        // todo - check code
+                    } else {
+                        if (!set || set.indexOf(_) < 0) {
+                            console.log("Invalid value for '" + id + "':  " + _);
+                        }
                     }
                     break;
                 case "html-color":
-                    var litmus = 'red';
-                    var d = document.createElement('div');
-                    d.style.color=litmus;
-                    d.style.color=_;
-                    //Element's style.color will be reverted to litmus or set to '' if an invalid color is given
-                    if( _ !== litmus && (d.style.color === litmus || d.style.color === '')){
-                        console.log("Invalid value for '" + id + "':  " + _);
+                    if (typeof _ === "object") {            
+                        // todo - check code
+                    } else {
+                        var litmus = 'red';
+                        var d = document.createElement('div');
+                        d.style.color=litmus;
+                        d.style.color=_;
+                        //Element's style.color will be reverted to litmus or set to '' if an invalid color is given
+                        if( _ !== litmus && (d.style.color === litmus || d.style.color === '')){
+                            console.log("Invalid value for '" + id + "':  " + _);
+                        }
                     }
                     break;
                 case "boolean":
-                    console.log(typeof _)
                     if (typeof _ === "object") {
                         for (var key in _) {
                             _[key] = Boolean(_[key]); // tis is correct
@@ -167,11 +174,23 @@
                     }
                     break;
                 case "string":
-                    _ = String(_);
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            _[key] = String(_[key]); // tis is correct
+                        }
+                    } else {            
+                        _ = String(_);
+                    }
                     break;
                 case "array":
-                    if (!(_ instanceof Array)) {
-                        console.log("Invalid value for '" + id);
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            // TODO - check code
+                        }
+                    } else {                    
+                        if (!(_ instanceof Array)) {
+                            console.log("Invalid value for '" + id);
+                        }
                     }
                     break;
             }
