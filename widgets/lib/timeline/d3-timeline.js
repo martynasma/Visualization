@@ -35,7 +35,7 @@
       ;
 
     function timeline (gParent) {
-      var g = gParent.append("g");
+      var g = gParent; // was gParent.append('g') - fixed the on .update adding another <g> everytime
       var gParentSize = gParent[0][0].getBoundingClientRect();
 
       var gParentItem = d3.select(gParent[0][0]);

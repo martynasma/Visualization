@@ -1,0 +1,25 @@
+.d3_Timeline .axis path,
+.d3_Timeline .axis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+	border-width: 5px;
+}
+.d3_Timeline .axis text {
+	font-family: sans-serif;
+	font-size: 10px;
+}
+.d3_Timeline .timeline-label {
+	font-family: sans-serif;
+	font-size: 12px;
+}
+#timeline2 .axis {
+	transform: translate(0px,30px);
+	-ms-transform: translate(0px,30px); /* IE 9 */
+	-webkit-transform: translate(0px,30px); /* Safari and Chrome */
+	-o-transform: translate(0px,30px); /* Opera */
+	-moz-transform: translate(0px,30px); /* Firefox */
+}
+.d3_Timeline .coloredDiv {
+	height:20px; width:20px; float:left;
+}
