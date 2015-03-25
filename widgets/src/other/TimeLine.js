@@ -9,15 +9,13 @@ https://github.com/jiahuang/d3-timeline
         root.Entity = factory(root.SVGWidget, root.ITimeLine, root.d3);
     }
 }(this, function (SVGWidget, ITimeLine, d3) {
-    var timelineLoaded = false;
-    require(["lib/timeline/d3-timeline"], function (d3TimeLine) {
-        timelineLoaded = true;
-    });
+
     function TimeLine() {
         SVGWidget.call(this);
         ITimeLine.call(this);
         this._class = "other_Timeline";
 
+        this._drawStartPos = "top-left"; // override default svg draw position
     };
     TimeLine.prototype = Object.create(SVGWidget.prototype);
     TimeLine.prototype.implements(ITimeLine.prototype);
@@ -50,6 +48,15 @@ https://github.com/jiahuang/d3-timeline
 
 
     };
+
+    TimeLine.prototype.render = function (callback) {
+        var context = this;
+        require(["lib/timeline/d3-timeline"], function (d3TimeLine) {
+            SVGWidget.prototype.render.call(context, callback);
+        });
+        return this;
+    };
+
 
     return TimeLine;
 }));
