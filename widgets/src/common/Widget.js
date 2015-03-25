@@ -133,64 +133,32 @@
             if (!arguments.length) return this["_" + id];
             switch (type) {
                 case "set":
-                    if (typeof _ === "object") {            
-                        // todo - check code
-                    } else {
-                        if (!set || set.indexOf(_) < 0) {
-                            console.log("Invalid value for '" + id + "':  " + _);
-                        }
+                    if (!set || set.indexOf(_) < 0) {
+                        console.log("Invalid value for '" + id + "':  " + _);
                     }
                     break;
                 case "html-color":
-                    if (typeof _ === "object") {            
-                        // todo - check code
-                    } else {
-                        var litmus = 'red';
-                        var d = document.createElement('div');
-                        d.style.color=litmus;
-                        d.style.color=_;
-                        //Element's style.color will be reverted to litmus or set to '' if an invalid color is given
-                        if( _ !== litmus && (d.style.color === litmus || d.style.color === '')){
-                            console.log("Invalid value for '" + id + "':  " + _);
-                        }
+                    var litmus = 'red';
+                    var d = document.createElement('div');
+                    d.style.color=litmus;
+                    d.style.color=_;
+                    //Element's style.color will be reverted to litmus or set to '' if an invalid color is given
+                    if( _ !== litmus && (d.style.color === litmus || d.style.color === '')){
+                        console.log("Invalid value for '" + id + "':  " + _);
                     }
                     break;
                 case "boolean":
-                    if (typeof _ === "object") {
-                        for (var key in _) {
-                            _[key] = Boolean(_[key]); // tis is correct
-                        }
-                    } else {
-                        _ = Boolean(_);
-                    }
+                    _ = Boolean(_);
                     break;
                 case "number":
-                    if (typeof _ === "object") {
-                        for (var key in _) {
-                            _[key] = Number(_[key]);
-                        }
-                    } else {
-                        _ = Number(_);
-                    }
+                    _ = Number(_);
                     break;
                 case "string":
-                    if (typeof _ === "object") {
-                        for (var key in _) {
-                            _[key] = String(_[key]); // tis is correct
-                        }
-                    } else {            
-                        _ = String(_);
-                    }
+                    _ = String(_);
                     break;
                 case "array":
-                    if (typeof _ === "object") {
-                        for (var key in _) {
-                            // TODO - check code
-                        }
-                    } else {                    
-                        if (!(_ instanceof Array)) {
-                            console.log("Invalid value for '" + id);
-                        }
+                    if (!(_ instanceof Array)) {
+                        console.log("Invalid value for '" + id);
                     }
                     break;
             }

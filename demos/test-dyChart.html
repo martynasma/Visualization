@@ -23,15 +23,15 @@
                 .testData()
                   //legend: 'always',
                   ////title: 'NYC vs. SF',
-                .showRoller(true,12345,4566)
-                .showRoller({'x':200,'y':500})
+                .showRoller(true)
+                //.showRoller({'x':200,'y':500})
                 .showRangeSelector(true)
                 .drawAxis({'x':true,'y':true})
                   //rollPeriod: 14,
                   //customBars: true,
                   //ylabel: 'Temperature (F)',
-                .axisLabelWidth({x:100})
-                .render()
+                .axisLabelWidth({x:200})
+                .render(function(widget) { console.log(widget); console.log('here'+widget.axisLabelWidth()); })
             ;
 
             //console.log(dc.drawAxis());
@@ -41,9 +41,11 @@
             //x['xyz.abc'] = 2;
             //console.log(x);
             var s = 0;
-            var xyz = setInterval(function() { if (s>50) { clearInterval(xyz); } else { s++; }  dc._chart.updateOptions({'pointSize':s}); console.log(s); },1000);
+            //var xyz = setInterval(function() { if (s>50) { clearInterval(xyz); } else { s++; }  dc._chart.updateOptions({'pointSize':s}); console.log(s); },1000);
             //console.log(dc.axis().test123xxx());
             g_widget = dc;
+            console.log('ii');
+            console.log(dc.axisLabelWidth());
         });
     </script>
 </body>

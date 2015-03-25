@@ -31,6 +31,97 @@ http://dygraphs.com/options.html
     };
     dyChart.prototype = Object.create(HTMLWidget.prototype);
     
+    dyChart.prototype.publish = function (id, defaultValue, type, description, set, ext) {
+        if (this["__meta_" + id] !== undefined) {
+            throw id + " is already published."
+        }
+        this["__meta_" + id] = {
+            id: id,
+            type: type,
+            defaultValue: defaultValue,
+            description: description,
+            set: set,
+            ext: ext || {}
+        }
+        this[id] = function (_) {
+            if (!arguments.length) return this["_" + id];
+            switch (type) {
+                case "set":
+                    if (typeof _ === "object") {            
+                        // todo - check code
+                    } else {
+                        if (!set || set.indexOf(_) < 0) {
+                            console.log("Invalid value for '" + id + "':  " + _);
+                        }
+                    }
+                    break;
+                case "html-color":
+                    if (typeof _ === "object") {            
+                        // todo - check code
+                    } else {
+                        var litmus = 'red';
+                        var d = document.createElement('div');
+                        d.style.color=litmus;
+                        d.style.color=_;
+                        //Element's style.color will be reverted to litmus or set to '' if an invalid color is given
+                        if( _ !== litmus && (d.style.color === litmus || d.style.color === '')){
+                            console.log("Invalid value for '" + id + "':  " + _);
+                        }
+                    }
+                    break;
+                case "boolean":
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            _[key] = Boolean(_[key]); // tis is correct
+                        }
+                    } else {
+                        _ = Boolean(_);
+                    }
+                    break;
+                case "number":
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            _[key] = Number(_[key]);
+                        }
+                    } else {
+                        _ = Number(_);
+                    }
+                    break;
+                case "string":
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            _[key] = String(_[key]); // tis is correct
+                        }
+                    } else {            
+                        _ = String(_);
+                    }
+                    break;
+                case "array":
+                    if (typeof _ === "object") {
+                        for (var key in _) {
+                            // TODO - check code
+                        }
+                    } else {                    
+                        if (!(_ instanceof Array)) {
+                            console.log("Invalid value for '" + id);
+                        }
+                    }
+                    break;
+            }
+            this["_" + id] = _;
+            return this;
+        };
+        this[id + "_modified"] = function () {
+            return this["_" + id] !== defaultValue;
+        }
+        this[id + "_reset"] = function () {
+            this["_" + id] = defaultValue;
+        }
+        this["_" + id] = defaultValue;
+    };
+
+
+    
     dyChart.prototype._palette = Palette.ordinal("default"); // or impliment INDChart ??
     dyChart.prototype.publish("paletteID", "default", "set", "Palette ID", dyChart.prototype._palette.switch());
     
@@ -129,6 +220,9 @@ http://dygraphs.com/options.html
     dyChart.prototype.publish("unhighlightCallback", null, "function", "");
     dyChart.prototype.publish("zoomCallback", null, "function", "");
     
+    dyChart.prototype.publish("drawHighlightPointCallback", null, "function", ""); // callback
+    dyChart.prototype.publish("drawPointCallback", null, "function", ""); // callback
+
     // Chart labels
     dyChart.prototype.publish("title", "", "string", "Chart Title");
     dyChart.prototype.publish("titleHeight", 18, "number", "Chart Title Height");
@@ -139,9 +233,6 @@ http://dygraphs.com/options.html
     // Data Line display
     dyChart.prototype.publish("connectSeparatedPoints", false, "boolean", "");
     dyChart.prototype.publish("drawGapEdgePoints", false, "boolean", "");
-    
-    dyChart.prototype.publish("drawHighlightPointCallback", null, "function", ""); // callback
-    dyChart.prototype.publish("drawPointCallback", null, "function", ""); // callback
     
     dyChart.prototype.publish("drawPoints", false, "boolean", "");
     dyChart.prototype.publish("fillGraph", false, "boolean", "");
@@ -674,7 +765,8 @@ http://dygraphs.com/options.html
         
         return this;
     }
-            
+
+        
     return dyChart;
 }));
 
