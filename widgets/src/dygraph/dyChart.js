@@ -9,6 +9,36 @@ http://dygraphs.com/options.html
 //http://dygraphs.com/tests/charting-combinations.html
 //http://dygraphs.com/tests/
 
+//TODO
+//interactionModel
+//highlightSeriesOpts
+//colorValue
+//colorSaturation
+//color
+//colors
+//strokeWidth .. idk if its per axis
+//strokePattern per series .. idk if its per axis
+//strokeBorderWidth
+//strokeBorderColor
+//stepPlot // per series and globally only
+//pointSize
+//plotter per series and general
+//fillGraph // per series and general
+
+//labelsDivStyles
+//width
+//height 
+
+//labelsKMB
+//labelsKMG2
+//
+//
+//    dyChart.prototype.publish("annotations", null, "object", "000");
+//    dyChart.prototype.publish("selection", null, "object", "000");
+
+   
+
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -31,6 +61,7 @@ http://dygraphs.com/options.html
     };
     dyChart.prototype = Object.create(HTMLWidget.prototype);
     
+    // Override Widget.publish
     dyChart.prototype.publish = function (id, defaultValue, type, description, set, ext) {
         if (this["__meta_" + id] !== undefined) {
             throw id + " is already published."
@@ -120,8 +151,6 @@ http://dygraphs.com/options.html
         this["_" + id] = defaultValue;
     };
 
-
-    
     dyChart.prototype._palette = Palette.ordinal("default"); // or impliment INDChart ??
     dyChart.prototype.publish("paletteID", "default", "set", "Palette ID", dyChart.prototype._palette.switch());
     
@@ -141,19 +170,16 @@ http://dygraphs.com/options.html
     dyChart.prototype.publish("annotationMouseOverHandler", null, "function", "000");
 
 
-    
-    // getter/setter ... TODO ... need to figure out how to handle these too
     dyChart.prototype.publish("annotations", null, "object", "000");
     dyChart.prototype.publish("selection", null, "object", "000");
-    dyChart.prototype.publish("visibility", null, "array", "000");
+    dyChart.prototype.publish("visibility", [], "array", "000");
     
     dyChart.prototype.publish("customOptions", null, "object", "000");
-    
-    // Axis stuff
-    // -- dyChart.prototype.publish("axis", "", "string", ""); // actually used by series and within Objects
+
+    // Axis
     dyChart.prototype.publish("axisLabelColor", {'x':"#000000",'y':"#000000",'y2':"#000000"}, "html-color", "");
     dyChart.prototype.publish("axisLabelFontSize", {'x':14,'y':14,'y2':14}, "number", "");
-    dyChart.prototype.publish("axisLabelFormatter", null, "function", "");
+    dyChart.prototype.publish("axisLabelFormatter", {x:null,y:null,y2:null}, "function", "");
     dyChart.prototype.publish("axisLabelWidth", {x:60,y:50}, "number", ""); 
     dyChart.prototype.publish("axisLineColor", {'x':"#000000",'y':"#000000",'y2':"#000000"}, "html-color", "");
     dyChart.prototype.publish("axisLineWidth", {x:0.3,y:0.3}, "number", "");
@@ -163,39 +189,28 @@ http://dygraphs.com/options.html
     
     dyChart.prototype.publish("drawAxesAtZero", false, "boolean", "");
     dyChart.prototype.publish("drawAxis", {'x':true,'y':true,'y2':false}, "boolean", "");
-    //dyChart.prototype.publish("drawXAxis", true, "boolean", ""); //dep
-    //dyChart.prototype.publish("drawYAxis", true, "boolean", ""); //dep
-    
-    dyChart.prototype.publish("axes", null, "object", ""); //  { x : { drawAxis } } ...  { y : { drawAxis } }
-    
-    
-    
     
     dyChart.prototype.publish("includeZero", false, "boolean", "");
     dyChart.prototype.publish("independentTicks", {'y':true,'y2':false}, "boolean", ""); // only for y's
     dyChart.prototype.publish("gridLineWidth", {'x':0.3,'y':0.3}, "number", "");
 
-
     dyChart.prototype.publish("labelsUTC", false, "boolean", "");
-    dyChart.prototype.publish("labelsKMB", true, "boolean", "");
-    dyChart.prototype.publish("labelsKMG2", true, "boolean", "");
+    dyChart.prototype.publish("labelsKMB", {'y':false,'y2':false}, "boolean", "");
+    dyChart.prototype.publish("labelsKMG2", {'y':false,'y2':false}, "boolean", "");
     
-
-
-
     dyChart.prototype.publish("logscale", false, "boolean", "");
     dyChart.prototype.publish("panEdgeFraction", null, "number", "");
     
     dyChart.prototype.publish("pixelsPerLabel", {'x':70,'y':30}, "number", ""); // Default: 70 (x-axis) or 30 (y-axes)
     
-    dyChart.prototype.publish("ticker", null, "function", "");
+    dyChart.prototype.publish("ticker", {x:null,y:null,y2:null}, "function", "");
     
     dyChart.prototype.publish("valueRange", [], "array", "");
     
     dyChart.prototype.publish("xAxisHeight", null, "number", ""); // make an inject 
     dyChart.prototype.publish("xRangePad", 0, "number", "");
     dyChart.prototype.publish("yRangePad", null, "number", "");
-    // End axis stuff
+    
     
     // CSV parsing 
     dyChart.prototype.publish("errorBars", false, "boolean", "000");
@@ -244,7 +259,7 @@ http://dygraphs.com/options.html
 
 
     dyChart.prototype.publish("stackedGraph", false, "boolean", "");
-    dyChart.prototype.publish("stackedGraphNaNFill", "all", "string", "");
+    dyChart.prototype.publish("stackedGraphNaNFill", "all", "set",null,["all","inside","none"]);
     dyChart.prototype.publish("stepPlot", false, "boolean", "");
     dyChart.prototype.publish("strokeBorderColor", "#FFFFFF", "html-color", "");
     dyChart.prototype.publish("strokeBorderWidth ", null, "number", ""); // make an inject
@@ -255,25 +270,16 @@ http://dygraphs.com/options.html
     dyChart.prototype.publish("sigma", 2.0, "number", "");
     dyChart.prototype.publish("fillAlpha", 0.15, "number", "");
     dyChart.prototype.publish("wilsonInterval", false, "boolean", "");
-    
-    
-    // colors section TODO or integration into what we currently have with palette
-    
-    
+     
     dyChart.prototype.publish("yLabelWidth", 18.0, "number", "");
     dyChart.prototype.publish("y2Label", "", "string", "");
     dyChart.prototype.publish("xLabel", "", "string", "");    
     dyChart.prototype.publish("xLabelHeight", 18, "number", "Chart Title Height");
     dyChart.prototype.publish("yLabel", "", "string", "Y-Axis Label");
-    
-    
-    
 
     // Grid
 
     dyChart.prototype.publish("drawGrid", {'y':true,'x':true,'y2':false}, "boolean", "");
-    //dyChart.prototype.publish("drawYGrid", false, "boolean", ""); // dep
-    //dyChart.prototype.publish("drawXGrid", false, "boolean", ""); // dep
     dyChart.prototype.publish("gridLineColor", "#808080", "html-color", "");
     dyChart.prototype.publish("gridLinePattern", [], "array", "");
 
@@ -307,16 +313,7 @@ http://dygraphs.com/options.html
 
     dyChart.prototype.publish("sigFigs", null, "number", ""); 
 
-
-
- 
-
-
-    //dyChart.prototype.publish("axesList", ['x','y','y1'], "array", "???"); // in conustrctor as private now...
-
-    
-    
-    
+       
     dyChart.prototype.enter = function (domNode, element) {
         this._chart = new Dygraph(domNode,[[0]],{width:this.width(),height:this.height()}); // our weird way of init with 0 data ... width and height must be set on init
         // width and height resize TODO cause there is a resize func
@@ -347,7 +344,7 @@ http://dygraphs.com/options.html
             'rollPeriod': this.rollPeriod(),
             
             'ylabel': this.yLabel(),
-            //'yLabelWidth': this.yLabelWidth(),
+            'yLabelWidth': this.yLabelWidth(),
             
             'y2label': this.y2Label(),
             
@@ -377,22 +374,9 @@ http://dygraphs.com/options.html
             'fillAlpha': this.fillAlpha(),
             'connectSeparatedPoints': this.connectSeparatedPoints(),
             'drawGapEdgePoints': this.drawGapEdgePoints(),
+            'stackedGraphNaNFill': this.stackedGraphNaNFill(),
+            'stackedGraph': this.stackedGraph(),
 
-
-
-
-            //'dateWindow': this.dateWindow(),
-            
-            //'axis': this.axis(), only can be used within side something like a series object
-            
-            // sets all axis's
-            //'axisLabelColor': this.axisLabelColor(),
-            //'axisLabelFontSize': this.axisLabelFontSize(),
-            //'axisLabelWidth': this.axisLabelWidth(), // THIS IS INCORRECT FIX IT!!!@@@@@
-            
-            //'axisLineColor': this.axisLineColor(),
-            //'axisLineWidth': this.axisLineWidth(),
-            //'axisTickSize': this.axisTickSize(),
             
             'drawPoints': this.drawPoints(),
             'fillGraph': this.fillGraph(),
@@ -400,10 +384,7 @@ http://dygraphs.com/options.html
 
 
             'drawAxesAtZero': this.drawAxesAtZero(), // might be used diff doesnt work here .. so far doc says its used here
-            
-            
-            //'drawXAxis': this.drawXAxis(), // depreciated .. can use my other draw axis thing
-            //'drawYAxis': this.drawYAxis(), // depreciated .. can use my other draw axis thing
+
             
             'includeZero': this.includeZero(),
             
@@ -411,10 +392,6 @@ http://dygraphs.com/options.html
             'logscale': this.logscale(), // this could be per x,y axis
             'panEdgeFraction': this.panEdgeFraction(),
 
-
-
-            //'labelsKMB': this.labelsKMB(),
-            //'labelsKMG2': this.labelsKMG2(),
             'maxNumberWidth':this.maxNumberWidth(),
             'sigFigs':this.sigFigs(),
             'digitsAfterDecimal': this.digitsAfterDecimal(),
@@ -427,7 +404,8 @@ http://dygraphs.com/options.html
             'yRangePad': this.yRangePad(),
             'xRangePad': this.xRangePad(),
             'xAxisHeight': this.xAxisHeight(),
-
+            
+            //'visibility': [false,true,true], DOES NOT WORK FREEZES widget
             'series': {
 
             },
@@ -438,98 +416,30 @@ http://dygraphs.com/options.html
             
         };
 
-
-        /*
-        var defaultConfig = {
-            'axes': {
-                x: {
-                    'axisLabelColor': true,
-                    'axisLabelFontSize': true,
-                    'axisLabelWidth': true,
-                    'axisLineColor': true,
-                    'axisLineWidth': true,
-                    'axisTickSize': true,
-                    
-                    // only here
-                    'drawAxis': true,
-                    'independentTicks': true,
-                    'ticker': true,
-
-                },
-                y: {
-                    'axisLabelColor': true,
-                    'axisLabelFontSize': true,
-                    'axisLabelWidth': true,
-                    'axisLineColor': true,
-                    'axisLineWidth': true,
-                    'axisTickSize': true,
-
-                    // only here
-                    //'drawAxis': this.drawAxis(),
-                    'drawAxis': true,
-                    'independentTicks': true,
-                    'ticker': true,
-                    
-                },
-                y2: {
-                    // all
-                    'axisLabelColor': false,
-                    'axisLabelFontSize': false,
-                    'axisLabelWidth': false,
-                    'axisLineColor': false,
-                    'axisLineWidth': false,
-                    'axisTickSize': false,
-                    
-                    
-                    // only here
-                    'drawAxis': false,
-                    //'drawAxis': this.drawY2Axis(), ?? does this even work
-                    //'independentTicks': this.independentY2Ticks(),
-                    'ticker': false
-                }
-            }
-        }
-        */
-
-        
-        var perSeries = ["showInRangeSelector","",""];
+        var perSeriesParams = ["showInRangeSelector","",""];
         // gridLineWidth ?????
         // labelsKMG2 and labelsKMB ... also for others can u do main and per axis and whats the diff and how to handle that
 
-        /*
-        for (var i = 0, j = this._axesList.length; i < j; i++) {
-            var val = {};
-            //val['drawAxis'] = typeof this.drawAxis()[this._axesList[i]] !=='undefined' ? this.drawAxis()[this._axesList[i]] : defaultConfig['axes'][this._axesList[i]]['drawAxis']; // the defaultconfig var way
-            val['drawAxis'] = typeof this.drawAxis()[this._axesList[i]] !=='undefined' ? this.drawAxis()[this._axesList[i]] : this['__meta_'+'drawAxis'].defaultValue[this._axesList[i]]; // the better way
-            val['pixelsPerLabel'] = typeof this.pixelsPerLabel()[this._axesList[i]] !=='undefined' ? this.pixelsPerLabel()[this._axesList[i]] : this['__meta_'+'pixelsPerLabel'].defaultValue[this._axesList[i]];
-
-            chartOptions['axes'][this._axesList[i]] = {
-                'drawAxis': val['drawAxis'],
-                'pixelsPerLabel': val['pixelsPerLabel']
-                //'drawAxis': true    
-            }
-        }                  
-        */
-        var perAxis = [
+        var perAxisParams = [
             "drawAxis","pixelsPerLabel","valueFormatter","independentTicks","gridLineWidth","gridLinePattern","gridLineColor","drawGrid","labelsKMB","labelsKMG2","valueRange",
-            "axisLabelColor","axisLabelFontSize","axisLabelWidth","axisLineColor","axisLineWidth","axisTickSize"
+            "axisLabelColor","axisLabelFontSize","axisLabelWidth","axisLineColor","axisLineWidth","axisTickSize","axisLabelFormatter","ticker"
         ];
         for (var i = 0, j = this._axesList.length; i < j; i++) {
              chartOptions['axes'][this._axesList[i]] = {}; // init
-             for (var axisIdx = 0; axisIdx < perAxis.length; axisIdx++) {
-                var val = typeof this[perAxis[axisIdx]]()[this._axesList[i]] !=='undefined' ? this[perAxis[axisIdx]]()[this._axesList[i]] : this['__meta_'+perAxis[axisIdx]].defaultValue[this._axesList[i]]; // the better way
+             for (var axisIdx = 0; axisIdx < perAxisParams.length; axisIdx++) {
+                var val = typeof this[perAxisParams[axisIdx]]()[this._axesList[i]] !=='undefined' ? this[perAxisParams[axisIdx]]()[this._axesList[i]] : this['__meta_'+perAxisParams[axisIdx]].defaultValue[this._axesList[i]]; // the better way
                 if (val === 'undefined' || val === null) {
                     continue;
                 }
-                chartOptions['axes'][this._axesList[i]][perAxis[axisIdx]] = val;
+                chartOptions['axes'][this._axesList[i]][perAxisParams[axisIdx]] = val;
             }
         }         
 
 
         if (colors.length > 0) { chartOptions.colors = colors; }
 
-        if (this.axisLabelFormatter() !== null) { chartOptions.axisLabelFormatter = this.axisLabelFormatter(); } // has to be like this
-
+        //if (this.axisLabelFormatter() !== null) { chartOptions.axisLabelFormatter = this.axisLabelFormatter(); } // has to be like this
+        if (this.dateWindow().length > 0) { chartOptions.dateWindow = this.dateWindow(); }
                 
         // labels
         if (this.columns().length > 0) { chartOptions.labels = this.columns(); }
@@ -548,8 +458,8 @@ http://dygraphs.com/options.html
         if (this.underlayCallback() != null) { chartOptions.underlayCallback = this.underlayCallback(); }
         if (this.unhighlightCallback() != null) { chartOptions.unhighlightCallback = this.unhighlightCallback(); }
         if (this.zoomCallback() != null) { chartOptions.zoomCallback = this.zoomCallback(); }
-        //if (this.drawHighlightPointCallback() != null) { chartOptions.drawHighlightPointCallback = this.drawHighlightPointCallback(); }
-        //if (this.drawPointCallback() != null) { chartOptions.drawPointCallback = this.drawPointCallback(); }
+        if (this.drawHighlightPointCallback() != null) { chartOptions.drawHighlightPointCallback = this.drawHighlightPointCallback(); }
+        if (this.drawPointCallback() != null) { chartOptions.drawPointCallback = this.drawPointCallback(); }
 
         
 
@@ -573,10 +483,12 @@ http://dygraphs.com/options.html
     dyChart.prototype.update = function (domNode, element) {
         this._palette = this._palette.switch(this._paletteID);
         
+        var isZoomedIgnoreProgrammaticZoom = false;
+        
         if (this.customOptions() != null) {
             this._chart.updateOptions(this.customOptions());
         } else {
-            this._chart.updateOptions(this.getChartOptions());
+            this._chart.updateOptions(this.getChartOptions(),isZoomedIgnoreProgrammaticZoom);
         }
         
         
@@ -695,7 +607,7 @@ http://dygraphs.com/options.html
         return this._chart.resize(width, height);
     } 
     
-    dyChart.prototype.visibility = function(num, value) {
+    dyChart.prototype.wvisibility = function(num, value) {
         if (!arguments.length) return this._chart.visibility();
         return this._chart.setVisibility(num, value);
     } 
