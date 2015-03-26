@@ -151,11 +151,67 @@ http://dygraphs.com/options.html
         this["_" + id] = defaultValue;
     };
 
+    
+    dyChart.prototype.publish("dataHandler", null, "function", "");
+dyChart.prototype.publish("valueFormatter", {'x':null,'y':null,'y2':null}, "function", "");
+    dyChart.prototype.publish("annotationClickHandler", null, "function", "Called whenever the user clicks on an annotation");
+    dyChart.prototype.publish("annotationDblClickHandler", null, "function", "000");
+    dyChart.prototype.publish("annotationMouseOutHandler", null, "function", "000");
+    dyChart.prototype.publish("annotationMouseOverHandler", null, "function", "000");
+    dyChart.prototype.publish("axisLabelFormatter", {x:null,y:null,y2:null}, "function", "");
+
+    dyChart.prototype.publish("ticker", {x:null,y:null,y2:null}, "function", "");
+
+    dyChart.prototype.publish("xValueParser", null, "function", "");
+    
+    // Callbacks
+    dyChart.prototype.publish("clickCallback", null, "function", ""); // canvas click
+    dyChart.prototype.publish("pointClickCallback", null, "function", ""); // data-point click
+    dyChart.prototype.publish("drawCallback", null, "function", "");
+    dyChart.prototype.publish("highlightCallback", null, "function", "");
+    dyChart.prototype.publish("underlayCallback", null, "function", "");
+    dyChart.prototype.publish("unhighlightCallback", null, "function", "");
+    dyChart.prototype.publish("zoomCallback", null, "function", "");
+    
+    dyChart.prototype.publish("drawHighlightPointCallback", null, "function", ""); // callback
+    dyChart.prototype.publish("drawPointCallback", null, "function", ""); // callback
+
+    dyChart.prototype.publish("plotter", null, "function", "");
+
+    //dyChart.prototype.dataHandler = function(_) {
+    //    return null; // return null to test if overwritten ?? this wont work
+
+    //}
+    dyChart.prototype.dataHandler = { x:null,y:null,y2:null };
+    dyChart.prototype.valueFormatter = null;
+    dyChart.prototype.annotationClickHandler = null;
+    dyChart.prototype.annotationDblClickHandler = null;
+    dyChart.prototype.annotationMouseOutHandler = null;
+    dyChart.prototype.annotationMouseOverHandler = null;
+    dyChart.prototype.axisLabelFormatter = null;
+    dyChart.prototype.ticker = null;
+    dyChart.prototype.xValueParser = null;
+    dyChart.prototype.clickCallback = null;
+    dyChart.prototype.pointClickCallback = null;
+    dyChart.prototype.drawCallback = null;
+    dyChart.prototype.highlightCallback = null;
+    dyChart.prototype.pointClickCallback = null;
+    dyChart.prototype.drawCallback = null;
+    dyChart.prototype.underlayCallback = null;
+    dyChart.prototype.xyz = null;
+    dyChart.prototype.xyz = null;
+    dyChart.prototype.xyz = null;
+    dyChart.prototype.xyz = null;
+    dyChart.prototype.xyz = null;
+
+
+
+
     dyChart.prototype._palette = Palette.ordinal("default"); // or impliment INDChart ??
     dyChart.prototype.publish("paletteID", "default", "set", "Palette ID", dyChart.prototype._palette.switch());
     
-    dyChart.prototype.publish("dataHandler", null, "function", "");
-    dyChart.prototype.publish("valueFormatter", {'x':null,'y':null,'y2':null}, "function", "");
+    
+    
     
     
     dyChart.prototype.publish("rollPeriod", 14, "number", "Number of days in which to average data");
@@ -164,10 +220,7 @@ http://dygraphs.com/options.html
     dyChart.prototype.publish("legend", "", "set", "Legend Options", ["", "always", "follow"]);
     dyChart.prototype.publish("showRoller", false, "boolean", "000");
 
-    dyChart.prototype.publish("annotationClickHandler", null, "function", "Called whenever the user clicks on an annotation");
-    dyChart.prototype.publish("annotationDblClickHandler", null, "function", "000");
-    dyChart.prototype.publish("annotationMouseOutHandler", null, "function", "000");
-    dyChart.prototype.publish("annotationMouseOverHandler", null, "function", "000");
+
 
 
     dyChart.prototype.publish("annotations", null, "object", "000");
@@ -179,7 +232,7 @@ http://dygraphs.com/options.html
     // Axis
     dyChart.prototype.publish("axisLabelColor", {'x':"#000000",'y':"#000000",'y2':"#000000"}, "html-color", "");
     dyChart.prototype.publish("axisLabelFontSize", {'x':14,'y':14,'y2':14}, "number", "");
-    dyChart.prototype.publish("axisLabelFormatter", {x:null,y:null,y2:null}, "function", "");
+
     dyChart.prototype.publish("axisLabelWidth", {x:60,y:50}, "number", ""); 
     dyChart.prototype.publish("axisLineColor", {'x':"#000000",'y':"#000000",'y2':"#000000"}, "html-color", "");
     dyChart.prototype.publish("axisLineWidth", {x:0.3,y:0.3}, "number", "");
@@ -203,7 +256,7 @@ http://dygraphs.com/options.html
     
     dyChart.prototype.publish("pixelsPerLabel", {'x':70,'y':30}, "number", ""); // Default: 70 (x-axis) or 30 (y-axes)
     
-    dyChart.prototype.publish("ticker", {x:null,y:null,y2:null}, "function", "");
+
     
     dyChart.prototype.publish("valueRange", [], "array", "");
     
@@ -224,19 +277,7 @@ http://dygraphs.com/options.html
    
     dyChart.prototype.publish("delimiter", ",", "string", "Chart Title");
     
-    dyChart.prototype.publish("xValueParser", null, "function", "");
-    
-    // Callbacks
-    dyChart.prototype.publish("clickCallback", null, "function", ""); // canvas click
-    dyChart.prototype.publish("pointClickCallback", null, "function", ""); // data-point click
-    dyChart.prototype.publish("drawCallback", null, "function", "");
-    dyChart.prototype.publish("highlightCallback", null, "function", "");
-    dyChart.prototype.publish("underlayCallback", null, "function", "");
-    dyChart.prototype.publish("unhighlightCallback", null, "function", "");
-    dyChart.prototype.publish("zoomCallback", null, "function", "");
-    
-    dyChart.prototype.publish("drawHighlightPointCallback", null, "function", ""); // callback
-    dyChart.prototype.publish("drawPointCallback", null, "function", ""); // callback
+
 
     // Chart labels
     dyChart.prototype.publish("title", "", "string", "Chart Title");
@@ -251,7 +292,7 @@ http://dygraphs.com/options.html
     
     dyChart.prototype.publish("drawPoints", false, "boolean", "");
     dyChart.prototype.publish("fillGraph", false, "boolean", "");
-    dyChart.prototype.publish("plotter", null, "function", "");
+
     
     // only works when drawpoints = true
     dyChart.prototype.publish("g_pointSize", 1, "number", ""); // g and s becuase not sure how to handle this where it can be n series and in general
