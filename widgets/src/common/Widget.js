@@ -187,14 +187,22 @@
         var that = this;
 
         if (section) {
-            var pcontext = this[section] || {};
+            if (typeof(this[section])==='undefined') {
+                var pcontext = this[section] = {};
+            } else {
+                var pcontext = this[section];
+            }
         } else {
             var pcontext = this;
         }
 
         for (var i = 0, l=list.length; i < l; i++) {
-
-            var context = pcontext[list[i]] || {};
+            
+            if (typeof(pcontext[list[i]])==='undefined') {
+                var context = pcontext[list[i]] = {};
+            } else {
+                var context = pcontext[list[i]];
+            }
 
             if (context["__meta_" + id] !== undefined) {
                 throw id + " is already published."

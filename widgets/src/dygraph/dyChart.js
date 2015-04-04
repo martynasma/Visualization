@@ -426,7 +426,8 @@
         this.series()
             .filter(function(s) { if (context.hasOwnProperty(s)) { return false; } else { return true; }}) // dont re-publish params (filter)
             .forEach(function(series) {
-                dyChart.prototype.publishGroup("axis",[series],"colorSaturation", null, "number", "");
+                console.log(series);
+                dyChart.prototype.publishGroup("seriesList",[series],"colorSaturation", null, "number", "");
             });
         
 
