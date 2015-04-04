@@ -187,11 +187,7 @@
         var that = this;
 
         if (section) {
-            if (typeof(this[section])==='undefined') {
-                var pcontext = this[section] = {};
-            } else {
-                var pcontext = this[section];
-            }
+            var pcontext = this[section] || {};
         } else {
             var pcontext = this;
         }
