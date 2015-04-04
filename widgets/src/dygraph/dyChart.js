@@ -68,6 +68,17 @@
     //TODO dyChart.prototype.publish("color", [,,[]], "array", '{type:"custom-html-color"}');
     //TODO dyChart.prototype.publish("colorValue", [,,[]], "array", '{type:"custom-number"}');
     
+
+    //console.log('here');
+    //console.log(dyChart.prototype.publish2);
+    //dyChart.prototype.publish2("bob",['xxx','yyy','aaa'],"colorSaturation2", null, "number", "");
+    //dyChart.prototype.publish2("bob",['bbb'],"colorSaturation2", null, "number", "");
+
+    //dyChart.prototype.publish2("bob",['xxx','yyy','aaa'],"colorSaturation2", null, "number", "");
+
+
+
+
     dyChart.prototype.publish("paletteID", "default", "set", "Palette ID", dyChart.prototype._palette.switch());
     dyChart.prototype.publish("dateWindow", [], "array", ""); // ??
     dyChart.prototype.publish("series", [], "array", "List of series");
@@ -403,10 +414,26 @@
         
         var isZoomedIgnoreProgrammaticZoom = false;
         var co = this.getChartOptions();
+
+        // remove unused params (cleanup)
+        for (var key in this["axis"]) {
+            if (this.series().indexOf(key) === -1) {
+                delete this["axis"][key];
+            }
+        }
+
+        var context = this;
+        this.series()
+            .filter(function(s) { if (context.hasOwnProperty(s)) { return false; } else { return true; }}) // dont re-publish params (filter)
+            .forEach(function(series) {
+                dyChart.prototype.publishGroup("axis",[series],"colorSaturation", null, "number", "");
+            });
         
+
         console.log('Chart Options:');
         console.log(co);
 
+        /* new publishGroup eliminates need for this ... can map all possible configuration types */
         if (Object.keys(this._customOptions.options).length > 0) {
             if (this._customOptions.overwrite) { // overwrite
                 co = this._customOptions.options;

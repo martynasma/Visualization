@@ -179,6 +179,91 @@
         this["_" + id] = defaultValue;
     };
 
+
+// Serialization  ---
+
+    Widget.prototype.publishGroup = function (section, list, id, defaultValue, type, description, set, ext) {
+
+        var that = this;
+
+        if (section) {
+            if (typeof(this[section])==='undefined') {
+                var pcontext = this[section] = {};
+            } else {
+                var pcontext = this[section];
+            }
+        } else {
+            var pcontext = this;
+        }
+
+        for (var i = 0, l=list.length; i < l; i++) {
+            
+            if (typeof(pcontext[list[i]])==='undefined') {
+                var context = pcontext[list[i]] = {};
+            } else {
+                var context = pcontext[list[i]];
+            }
+
+            if (context["__meta_" + id] !== undefined) {
+                throw id + " is already published."
+            }
+            context["__meta_" + id] = {
+                id: id,
+                type: type,
+                defaultValue: defaultValue,
+                description: description,
+                set: set,
+                ext: ext || {}
+            }
+            context[id] = function (_) {
+                if (!arguments.length) return context["_" + id];
+                switch (type) {
+                    case "set":
+                        if (!set || set.indexOf(_) < 0) {
+                            console.log("Invalid value for '" + id + "':  " + _);
+                        }
+                        break;
+                    case "html-color":
+                        var litmus = 'red';
+                        var d = document.createElement('div');
+                        d.style.color=litmus;
+                        d.style.color=_;
+                        //Element's style.color will be reverted to litmus or set to '' if an invalid color is given
+                        if( _ !== litmus && (d.style.color === litmus || d.style.color === '')){
+                            console.log("Invalid value for '" + id + "':  " + _);
+                        }
+                        break;
+                    case "boolean":
+                        _ = Boolean(_);
+                        break;
+                    case "number":
+                        _ = Number(_);
+                        break;
+                    case "string":
+                        _ = String(_);
+                        break;
+                    case "array":
+                        if (!(_ instanceof Array)) {
+                            console.log("Invalid value for '" + id);
+                        }
+                        break;
+                }
+                //context.broadcast(id, _, context["_" + id]); // need to get this working
+                //Widget.prototype.broadcast(id, _, context["_" + id]); 
+                context["_" + id] = _;
+                return that;
+            };
+            context[id + "_modified"] = function () {
+                return context["_" + id] !== defaultValue;
+            }
+            context[id + "_reset"] = function () {
+                context["_" + id] = defaultValue;
+            }
+            context["_" + id] = defaultValue;
+        }
+    };
+
+
     Widget.prototype.publishWidget = function (prefix, WidgetType, id) {
         for (var key in WidgetType.prototype) {
             if (key.indexOf("__meta") === 0) {
