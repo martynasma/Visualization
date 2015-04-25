@@ -2,9 +2,9 @@
     if (typeof define === "function" && define.amd) {
         define(["../common/SVGWidget", "../chart/I2DChart"], factory);
     } else {
-        root.Entity = factory(root.SVGWidget);
+        root.other_Legend = factory(root.common_SVGWidget, root.chart_I2DChart);
     }
-}(this, function (SVGWidget,I2DChart) {
+}(this, function (SVGWidget, I2DChart) {
     function Legend() {  
         SVGWidget.call(this);  
         I2DChart.call(this);  
