@@ -1,0 +1,37 @@
+.form_Form {
+	color:#333333;
+	border-width: 1px;
+	border-color: #999999;
+	border-collapse: collapse;
+}
+
+.form_Form th {
+    padding:5px 10px;
+	background-color:#1f77b4;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #a9c6c9;
+    color:white;
+    white-space: nowrap;
+}
+
+.form_Form tbody tr {
+	background-color:#dcf1ff;
+    color:black;
+}
+
+.form_Form tbody tr:hover {
+	background-color:#ff7f0e;
+    color:white;
+}
+
+.form_Form tbody td {
+	border-style: solid;
+	border-color: #a9c6c9;
+    white-space: nowrap;
+}
+
+.form_Form td {
+	border-width: 1px;
+    padding:2px 5px;
+}
