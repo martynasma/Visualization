@@ -47,5 +47,8 @@
   "license": "Apache",
   "authors": [
     "HPCC Systems"
-  ]
+  ],
+  "devDependencies": {
+    "pleasejs": "~0.4.2"
+  }
 }

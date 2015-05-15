@@ -1,11 +1,11 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "../common/HTMLWidget", "goog!visualization,1,packages:[corechart]"], factory);
+        define(["d3", "../common/HTMLWidget", "pleasejs", "goog!visualization,1,packages:[corechart]"], factory);
     } else {
-        root.google_Common = factory(root.d3, root.common_HTMLWidget);
+        root.google_Common = factory(root.d3, root.common_HTMLWidget, root.Please);
     }
-}(this, function (d3, HTMLWidget) {
+}(this, function (d3, HTMLWidget, Please) {
 
     function Common(tget) {
         HTMLWidget.call(this);
@@ -69,10 +69,12 @@
     };
 
     Common.prototype.getChartOptions = function () {
-        var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row) {
-            return this._palette(row);
+        // var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row, i) {
+        //     return this._palette(row);
+        // }, this);
+        var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row, i) {
+            return this.colorArr[i];
         }, this);
-
         var chartOptions =  {
             backgroundColor: {
                 stroke: this.backgroundColorStroke(),
@@ -121,6 +123,12 @@
 
     Common.prototype.enter = function (domNode, element) {
         element.style("overflow", "hidden");
+
+        this.colorArr = Please.make_color({
+            colors_returned: this._columns.length //set number of colors returned
+        });
+
+        console.log(this.colorArr);
 
         this._chart = new google.visualization[this._chartType](domNode);
 

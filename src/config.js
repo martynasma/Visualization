@@ -24,10 +24,18 @@ require.config({
         "amcharts.serial": "../bower_components/amcharts/dist/amcharts/serial",
         "amcharts.xy": "../bower_components/amcharts/dist/amcharts/xy",
         "amcharts.plugins.responsive": "../bower_components/amcharts/dist/amcharts/plugins/responsive/responsive",
+        "pleasejs": "../bower_components/pleasejs/dist/Please",
 
         "src": "../src"
     },
     shim: {
+        "pleasejs": {
+//            deps: ["pleasejs"],
+            exports: "Please",
+            init: function() {
+                Please.isReady = true;
+            }
+        },
         "amcharts.funnel": {
             deps: ["amcharts"],
             exports: "AmCharts",
@@ -99,6 +107,8 @@ if (window.location.hostname === "rawgit.com") {
             "amcharts.xy": "http://rawgit.com/arturgspb/bower-amcharts/v3.13.3/dist/amcharts/xy",
             "amcharts.plugins.responsive": "http://rawgit.com/arturgspb/bower-amcharts/v3.13.3/dist/amcharts/plugins/responsive/responsive",
             "amcharts.plugins.dataloader": "http://rawgit.com/arturgspb/bower-amcharts/v3.13.3/dist/amcharts/plugins/dataloader",
+
+            "pleasejs": "http://rawgit.com/Fooidge/PleaseJS/master/dist/Please",
 
             "src": "../src"
         }
