@@ -125,7 +125,7 @@
         element.style("overflow", "hidden");
 
         this.colorArr = Please.make_color({
-            colors_returned: this._columns.length //set number of colors returned
+            colors_returned: this._columns.length-1 //set number of colors returned
         });
 
         console.log(this.colorArr);
