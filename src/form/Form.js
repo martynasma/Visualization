@@ -19,15 +19,18 @@
             .columns([{
                 id: "subject",
                 label: "Subject",
-                type: "string"  //  If ommitted should default to string  ---
+                type: "string",  //  If ommitted should default to string  ---
+                validate: "[A-Za-z]"
             }, {
                 id: "result",
                 label: "Result",
-                type: "number"
+                type: "number",
+                validate: "\\d+"
             }, {
                 id: "fail",
                 label: "Failed?",
-                type: "boolean"
+                type: "boolean",
+                validate: "(true|false)"
             }])
             .data([["Geography", 66, false]])
         ;
@@ -65,7 +68,11 @@
              .attr('type', 'button')
              .attr('value', 'Submit')
              .on('click', function (d) {
-                 context.click(context.rowToObj(context._data[0]));
+                 if (context._validate(context.rowToObj(context._data[0]))) {
+                    context.click(context.rowToObj(context._data[0]));
+                 } else {
+                    console.log("validation failed");
+                 }
              })
         ;
         btntd.append('input')
@@ -75,6 +82,24 @@
                  context.click();
              })
         ;
+
+    };
+
+    Form.prototype._validate = function(context) {
+        return this.columns().every(function(d, i) {
+            var valStr = d.validate;
+            var re = new RegExp(valStr);
+            if (valStr) {
+                if (!re.test(context[d.id])) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        });
     };
 
     Form.prototype.update = function (domNode, element) {

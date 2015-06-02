@@ -35,3 +35,7 @@
 	border-width: 1px;
     padding:2px 5px;
 }
+
+.form_Form input {
+    padding:0px;
+}
