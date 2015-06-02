@@ -24,10 +24,17 @@ require.config({
         "amcharts.serial": "../bower_components/amcharts/dist/amcharts/serial",
         "amcharts.xy": "../bower_components/amcharts/dist/amcharts/xy",
         "amcharts.plugins.responsive": "../bower_components/amcharts/dist/amcharts/plugins/responsive/responsive",
-
+        "dimple": "../bower_components/dimple/dist/dimple.latest.min",
         "src": "../src"
     },
     shim: {
+        "d3": {
+            exports: "d3"
+        },
+        "dimple": {
+            exports: "dimple",
+            deps: ["d3"]
+        },
         "amcharts.funnel": {
             deps: ["amcharts"],
             exports: "AmCharts",
