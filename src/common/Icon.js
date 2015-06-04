@@ -44,10 +44,12 @@
             .render()
         ;
         this._tooltipElement = element.append("title");
-        element.on("click", this.click);
+        var context = this;
+        element.on("click", function(el) { console.log(context); context.click(el); });
+        //element.on("click", this.click);
     };
 
-    Icon.prototype.click = function (domNode, element) {
+    Icon.prototype.click = function (domNode) {
         console.log("Clicked the icon");
     };
 

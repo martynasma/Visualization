@@ -14,6 +14,7 @@
             .faChar("\uf07b")
             .paddingPercent(50)
         ;
+
         this._container = new Shape()
             .class("container")
             .shape("rect")
@@ -42,6 +43,7 @@
 
         this._showContent = true;
         this._content = null;
+        this._surfaceButtons = [];
     }
     Surface.prototype = Object.create(SVGWidget.prototype);
     Surface.prototype._class += " common_Surface";
@@ -54,6 +56,8 @@
     Surface.prototype.publishProxy("icon_shape", "_icon", "shape");
     //Surface.prototype.publish("menu");
     Surface.prototype.publish("content", null, "widget", "Content",null,{tags:['Private']});
+
+    Surface.prototype.publish("buttonAnnotations", [], "array", "Button Array",null,{tags:['Private']});
 
     Surface.prototype.menu = function (_) {
         if (!arguments.length) return this._menu.data();
@@ -79,6 +83,9 @@
     Surface.prototype.testData = function () {
         this.title("Hello and welcome!");
         this.menu(["aaa", "bbb", "ccc"]);
+        //this.buttonAnnotations([{char:"\uf010",callback: function(domNode) { console.log(domNode); console.log("Click Override on ID:" + domNode); }},{char:"\uf00e",callback: function(domNode) { console.log("Click Override on ID:" + domNode); }}])
+        this.buttonAnnotations([{id:"button_1",char:"\uf010",shape:"square",diamter:14,padding:0,callback: function(domNode) { console.log(domNode); console.log("Click Override on ID:" + domNode); }},{id:"button_2",char:"\uf00e",shape:"square",diamter:14,padding:0,callback: function(domNode) { console.log("Click Override on ID:" + domNode); }}])
+
         return this;
     };
 
@@ -130,13 +137,55 @@
             .display(this.showTitle())
             .render()
         ;
+
+        if (this.buttonAnnotations().length > 0) {
+            var context = this;
+            var surfaceButtons = element.selectAll(".surface-button").data(this.buttonAnnotations());
+            surfaceButtons.enter().append("tspan")
+                .each(function (button, idx) {
+                    context._surfaceButtons[idx] = new Icon()
+                    .faChar(button['char'])
+                    .diameter(button['diamter'])
+                    .image_colorFill(button['image_colorFill'])
+                    .shape_colorFill(button['shape_colorFill'])
+                    .shape_colorStroke(button['shape_colorStroke'])
+                    .paddingPercent(button['padding'])
+                    .target(domNode)
+                    .display(context.showTitle() && context.showIcon())
+                    .shape("none")
+                    //.move({ x: (context._size.width / 2 - menuClientSize.width * 2) - 20 - buttonClientSize.width * idx, y: yTitle })
+                    .render(function(widget) {
+                        widget.element().style("cursor","pointer");
+                        widget.element().classed("surface-button", true);
+                        widget.click = function(d) { console.log('here') };
+                        console.log(widget);
+//                        if (context.buttonAnnotations()[idx].callback) {
+//                            widget.click = context.buttonAnnotations()[idx].callback;
+//                        }
+                        widget.element().on("click", function(d) { context.click(d); });
+                    });
+
+                })
+
+            ;
+            surfaceButtons.exit()
+                .each(function (d, idx) {
+                    var element = d3.select(this);
+                    delete context._surfaceButtons[idx];
+                    element.remove();
+                })
+            ;
+
+        }
+
+        var buttonClientSize = this.showIcon() ? this._icon.getBBox(true) : {width:0, height: 0};
         var iconClientSize = this.showIcon() ? this._icon.getBBox(true) : {width:0, height: 0};
         var textClientSize = this._text.getBBox(true);
         var menuClientSize = this._menu.getBBox(true);
-        var titleRegionHeight = Math.max(iconClientSize.height, textClientSize.height, menuClientSize.height);
+        var titleRegionHeight = Math.max(iconClientSize.height, textClientSize.height, menuClientSize.height, buttonClientSize.height);
         var yTitle = (-this._size.height + titleRegionHeight) / 2;
 
-        var titleTextHeight = Math.max(textClientSize.height, menuClientSize.height);
+        var titleTextHeight = Math.max(textClientSize.height, menuClientSize.height, buttonClientSize.height);
 
         var topMargin = titleRegionHeight <= titleTextHeight ? 0 : (titleRegionHeight - titleTextHeight) / 2;
         var leftMargin = topMargin;
@@ -157,6 +206,11 @@
         this._text
             .move({ x: (iconClientSize.width / 2 - menuClientSize.width / 2) / 2, y: yTitle })
         ;
+        this._surfaceButtons.forEach(function(button, idx) {
+            button.move({ x: (context._size.width / 2 - menuClientSize.width * 2) - 20 - buttonClientSize.width * idx, y: yTitle })
+            button.click = context._surfaceButtons[idx].callback;
+        });
+
         if (this.showTitle()) {
             this._container
                 .pos({ x: leftMargin / 2, y: titleRegionHeight / 2 - topMargin / 2 })
@@ -183,6 +237,7 @@
                 .attr("clip-path", "url(#" + this.id() + "_clip)")
                 .each(function (d) {
                     d.target(this);
+                    // TODO: buttons within container
                 })
             ;
             content
@@ -216,7 +271,7 @@
             ;
         }
 
-        this._menu.element().node().parentNode.appendChild(this._menu.element().node());
+        this._menu.element().node().parentNode.appendChild(this._menu.element().node()); // Make sure menu is on top (Z-Order POV)
     };
 
     Surface.prototype.exit = function (domNode, element) {
@@ -264,6 +319,10 @@
         });
         return nearest && nearest.i ? nearest.i : null;
     };
+
+    Surface.prototype.click = function(obj) {
+        console.log("Clicked: " + obj.id);
+    }
 
     return Surface;
 }));
