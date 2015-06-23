@@ -1,3 +1,8 @@
+/**
+ * @file AmChart Gauge
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,20 +11,41 @@
         root.amchart_Gauge = factory(root.d3, root.common_HTMLWidget, root.AmCharts, root.api_I1DChart);
     }
 }(this, function(d3, HTMLWidget, AmCharts, I1DChart) {
+    /**
+     * @class amchart_Gauge
+     * @extends common_HTMLWidget
+     * @extends api_I1DChart
+     * @implements api_I1DChart
+     */
     function Gauge() {
         HTMLWidget.call(this);
-        this._tag = "div";
 
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof amchart_Gauge
+         * @private
+         */
+        this._tag = "div";
+        /**
+         * AmChart widget/chart object.
+         * @member {Object} _chart
+         * @memberof amchart_Gauge
+         * @private
+         */
         this._chart = {};
     }
 
     Gauge.prototype = Object.create(HTMLWidget.prototype);
     Gauge.prototype.implements(I1DChart.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof amchart_Gauge
+     * @private
+     */
     Gauge.prototype._class += " amchart_Gauge";
 
-    /**
-     * Publish Params Common To Other Libraries
-     */
     Gauge.prototype.publish("paletteID", "default", "set", "Palette ID", Gauge.prototype._palette.switch(), {tags:['Basic','Shared']});
     Gauge.prototype.publish("low", 0, "number", "Gauge lower bound", null, {tags:['Intermediate','Shared']});
     Gauge.prototype.publish("high", 100, "number", "Gauge higher bound", null, {tags:['Intermediate','Shared']});
@@ -28,9 +54,6 @@
     Gauge.prototype.publish("fontFamily", null, "string", "Font Name",null,{tags:['Basic','Shared','Shared']});
     Gauge.prototype.publish("fontColor", null, "html-color", "Font Color",null,{tags:['Basic','Shared']});
 
-    /**
-     * Publish Params Unique To This Widget
-     */
     Gauge.prototype.publish("axisLineWidth", 1, "number", "Thickness of axis",null,{tags:['Intermediate']});
 
     Gauge.prototype.publish("colorType", "a", "set", "", ["a","b","c"],{tags:['Basic']});
@@ -54,6 +77,14 @@
 
     Gauge.prototype.publish("animatationDuration", 2, "number", "Animation Duration (sec)",null,{tags:['Intermediate']});
 
+    /**
+     * Updates underlying AmChart widget object, with options from publish parameters.
+     * @method updateChartOptions
+     * @memberof amchart_Gauge
+     * @instance
+     * @private
+     * @returns {Object}
+     */
     Gauge.prototype.updateChartOptions = function() {
         this._chart.type = "gauge";
         this._chart.theme = "none";
@@ -122,6 +153,14 @@
         return this._chart;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof amchart_Gauge
+     * @instance
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Gauge.prototype.update = function(domNode, element) {
         this._palette = this._palette.switch(this.paletteID());
 
@@ -135,6 +174,16 @@
         this._chart.validateData();
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @protected
+     * @instance
+     * @protected
+     * @memberof amchart_Gauge
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Gauge.prototype.enter = function(domNode, element) {
         domNode.style.width = this.size().width + 'px';
         domNode.style.height = this.size().height + 'px';
@@ -148,6 +197,14 @@
         this._chart = AmCharts.makeChart(domNode, initObj);
     };
 
+    /**
+     * Populates Data and Columns with testData.
+     * @method testData
+     * @memberof amchart_Gauge
+     * @instance
+     * @public
+     * @returns {Widget}
+     */
     Gauge.prototype.testData = function() {
         this.numBands(3);
         this.bandsColor(["#84b761","#fdd400","#cc4748"]);

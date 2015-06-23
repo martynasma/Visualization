@@ -1,3 +1,8 @@
+/**
+ * @file AmChart CommonFunnel
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -7,25 +12,37 @@
     }
 
 }(this, function(d3, HTMLWidget, AmCharts) {
+    /**
+     * @class amchart_CommonFunnel
+     * @abstract
+     * @extends common_HTMLWidget
+     * @noinit
+     */
     function CommonFunnel() {
         HTMLWidget.call(this);
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof amchart_CommonFunnel
+         * @private
+         */
         this._tag = "div";
 
+        /**
+         * AmChart widget/chart object.
+         * @member {Object} _chart
+         * @memberof amchart_CommonFunnel
+         * @private
+         */
         this._chart = {};
     }
 
     CommonFunnel.prototype = Object.create(HTMLWidget.prototype);
 
-    /**
-     * Publish Params Common To Other Libraries
-     */
     CommonFunnel.prototype.publish("fontSize", null, "number", "Font Size",null,{tags:['Basic','Shared']});
     CommonFunnel.prototype.publish("fontFamily", null, "string", "Font Name",null,{tags:['Basic','Shared']});
     CommonFunnel.prototype.publish("fontColor", null, "html-color", "Font Color",null,{tags:['Basic','Shared']});
 
-    /**
-     * Publish Params Unique To This Widget
-     */
     CommonFunnel.prototype.publish("flip", true, "boolean", "Flip Chart",null,{tags:['Intermediate']});
     CommonFunnel.prototype.publish("reverseDataSorting", false, "boolean", "Reverse Data Sorting",null,{tags:['Intermediate']});
 
@@ -44,6 +61,14 @@
     CommonFunnel.prototype.publish("Depth3D", 0, "number", "3D Depth (px)",null,{tags:['Basic']});
     CommonFunnel.prototype.publish("Angle3D", 0, "number", "3D Angle (Deg)",null,{tags:['Basic']});
 
+    /**
+     * Updates underlying AmChart widget object, with options from publish parameters.
+     * @method updateChartOptions
+     * @memberof amchart_CommonFunnel
+     * @instance
+     * @private
+     * @returns {Object}
+     */
     CommonFunnel.prototype.updateChartOptions = function() {
 
         this._chart.startDuration = this.startDuration();
@@ -93,6 +118,15 @@
         return this._chart;
     };
 
+    /**
+     * Formats data passed via data() correctly for AmCharts underlying widget.
+     * @method formatData
+     * @memberof amchart_CommonFunnel
+     * @instance
+     * @private
+     * @params {Array} dataArr Data array from data() method.
+     * @returns {Array}
+     */
     CommonFunnel.prototype.formatData = function(dataArr){
         var dataObjArr = [];
         var context = this;
@@ -106,6 +140,19 @@
         return dataObjArr;
     };
 
+    /**
+     * Sets the columns for the data being passed into the widget via .data() method.
+     * @method columns
+     * @memberof amchart_CommonFunnel
+     * @instance
+     * @public
+     * @param {String[]} _ An array of strings representing the column names for data passed to widget.
+     * @returns {Widget}
+     * @example widget
+     * .columns(["ID", "Year 1", "Year 2"])
+     * .data([ [40, 66, 60], [30, 98, 92]  ])
+     * .render();
+     */
     CommonFunnel.prototype.columns = function(colArr) {
         if (!arguments.length) return this._columns;
         var retVal = HTMLWidget.prototype.columns.apply(this, arguments);
@@ -122,6 +169,15 @@
         return retVal;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @protected
+     * @instance
+     * @memberof amchart_CommonFunnel
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     CommonFunnel.prototype.enter = function(domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
         var initObj = {
@@ -134,6 +190,15 @@
         this._chart = AmCharts.makeChart(domNode, initObj);
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page, after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof amchart_CommonFunnel
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     CommonFunnel.prototype.update = function(domNode, element) {
         HTMLWidget.prototype.update.apply(this, arguments);
 

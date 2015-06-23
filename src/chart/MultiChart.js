@@ -1,3 +1,8 @@
+/**
+ * @file HPCC VIZ MultiChart
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -41,6 +46,12 @@
     ];
     var _allChartTypes = _2dChartTypes.concat(_multiChartTypes.concat(_anyChartTypes));
 
+    /**
+     * @class chart_MultiChart
+     * @extends common_SVGWidget
+     * @extends api_INDChart
+     * @implements api_INDChart
+     */
     function MultiChart() {
         SVGWidget.call(this);
         INDChart.call(this);
@@ -64,12 +75,27 @@
         this._allCharts["BAR"] = this._allCharts["COLUMN"];
     }
     MultiChart.prototype = Object.create(SVGWidget.prototype);
-    MultiChart.prototype._class += " chart_MultiChart";
     MultiChart.prototype.implements(INDChart.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof chart_Line
+     * @private
+     */
+    MultiChart.prototype._class += " chart_MultiChart";
 
     MultiChart.prototype.publish("chartType", "BUBBLE", "set", "Chart Type", _allChartTypes.map(function (item) { return item.id; }),{tags:['Basic']});
     MultiChart.prototype.publish("chart", null, "widget", "Chart",null,{tags:['Basic']});
 
+    /**
+     * Sets the columns for the data being passed into the widget via .data() method.
+     * @method columns
+     * @memberof chart_MultiChart
+     * @instance
+     * @param {String[]} _ An array of strings representing the column names for data passed to widget.
+     * @returns {Widget}
+     * @example widget.columns(["ID", "Year 1", "Year 2"]).data([ [40, 66, 60], [30, 98, 92]  ]).render();
+     */
     MultiChart.prototype.columns = function (_) {
         var retVal = SVGWidget.prototype.columns.apply(this, arguments);
         if (arguments.length && this.chart()) {
@@ -78,6 +104,15 @@
         return retVal;
     };
 
+    /**
+     * Sets data to be render for the widget inside the MultiChart container.
+     * @method data
+     * @memberof chart_MultiChart
+     * @instance
+     * @param {Mixed} _ The data being rendered.
+     * @returns {Widget}
+     * @example widget.columns(["ID", "Year 1", "Year 2"]).data([ [40, 66, 60], [30, 98, 92]  ]).render();
+     */
     MultiChart.prototype.data = function (_) {
         var retVal = SVGWidget.prototype.data.apply(this, arguments);
         if (arguments.length && this.chart()) {
@@ -90,6 +125,14 @@
         return this.chart() && this.chart().hasOverlay();
     };
 
+    /**
+     * Gets/Sets visibility of widget inside MultiChart container.
+     * @method visible
+     * @memberof chart_MultiChart
+     * @instance
+     * @param {Boolean} _ True/False
+     * @returns {Widget|Boolean}
+     */
     MultiChart.prototype.visible = function (_) {
         if (!arguments.length) return this.chart() && this.chart().visible();
         if (this.chart()) {
@@ -98,6 +141,22 @@
         return this;
     };
 
+    /**
+     * An optional callback function as parameter. The current widget object being operated on is passed to the function. The function is used to call widget render and/or post/pre render tasks.
+     * @name MultiChart~requireContentCb
+     * @function
+     * @param {Widget} widget - The rendered widget.
+     */
+
+    /**
+     * Loads widget into the MultiChart container.
+     * @method visible
+     * @memberof chart_MultiChart
+     * @instance
+     * @param {String} chartType Name of chart.
+     * @param {MultiChart~requireContentCb} callback
+     * @returns {Widget|Boolean}
+     */
     MultiChart.prototype.requireContent = function (chartType, callback) {
         var retVal = this._allCharts[chartType].widget;
         if (retVal) {
@@ -114,6 +173,22 @@
         });
     };
 
+    /**
+     * An optional callback function as parameter. The current widget object being operated on is passed to the function. The function will execute ater the widget has completed rendering.
+     * @name MultiChart~switchChartCb
+     * @function
+     * @param {Widget} widget - The rendered widget.
+     */
+
+    /**
+     * Switches
+     * @method visible
+     * @memberof chart_MultiChart
+     * @instance
+     * @param {Boolean} _ True/False
+     * @param {MultiChart~switchChartCb} callback
+     * @returns {Widget|Boolean}
+     */
     MultiChart.prototype.switchChart = function (callback) {
         var oldContent = this.chart();
         var context = this;
@@ -143,6 +218,15 @@
         });
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof chart_MultiChart
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     MultiChart.prototype.update = function (domNode, element) {
         SVGWidget.prototype.update.apply(this, arguments);
         var content = element.selectAll(".multiChart").data(this.chart() ? [this.chart()] : [], function (d) { return d._id; });
@@ -169,6 +253,16 @@
         ;
     };
 
+    /**
+     * The function that is executed after render. It is used for doing destroying/cleanup.
+     * @method exit
+     * @memberof common_Widget
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     * @returns {Widget}
+     */
     MultiChart.prototype.exit = function (domNode, element) {
         if (this.chart()) {
             this.chart().target(null);
@@ -176,7 +270,23 @@
         SVGWidget.prototype.exit.apply(this, arguments);
     };
 
+    /**
+     * An optional callback function as parameter. The current widget object being operated on is passed to the function. The function will execute ater the widget has completed rendering.
+     * @name MultiChart~renderCb
+     * @function
+     * @param {Widget} widget - The rendered widget.
+     */
 
+    /**
+     * Renders widget in MultiChart container immediately.
+     * @method render
+     * @memberof chart_MultiChhart
+     * @instance
+     * @param {MultiChart~RenderCb} [callback] - The callback function that is executed after widget render.
+     * @returns {Widget}
+     * @example <caption>Example usage of render.</caption>
+     * var w = new Widget.target("divID").render(function(widget) { console.log(widget); });
+     */
     MultiChart.prototype.render = function (callback) {
         if (this.chartType() && (!this.chart() || (this.chart()._class !== this._allCharts[this.chartType()].widgetClass))) {
             var context = this;

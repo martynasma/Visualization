@@ -6,6 +6,10 @@
         root.map_ChoroplethCountries = factory(root.d3, root.map_Choropleth, root.topojson, root.map_countries);
     }
 }(this, function (d3, Choropleth, topojson, countries) {
+    /**
+     * @class map_ChoroplethCountries
+     * @extends map_Choropleth
+     */
     function ChoroplethCountries() {
         Choropleth.call(this);
 
@@ -20,24 +24,24 @@
     ChoroplethCountries.prototype.publish("worldProjection", "mercator", "set", "Map Projection", ["mercator", "orthographic"],{tags:['Private']});
 
     ChoroplethCountries.prototype.testData = function () {
-        
+
         var nameCodeMap = {};
         for (var key in countries.countryNames) {
             var item = countries.countryNames[key];
             nameCodeMap[item.name] = key;
         }
-        
+
         var rawData = [
             { "name": "United States", "weight": 29.946185501741 }, { "name": "China", "weight": 229.946185501741 }
         ];
-        
+
         var countryData = rawData.map(function (item) {
             return { "country": nameCodeMap[item.name], "weight": item.weight, "label":item.name };
         });
-        
+
         this.columns(["Country", "Weight", "Label"]);
         this.data(countryData);
-        
+
         return this;
     };
 
@@ -65,7 +69,7 @@
 
     ChoroplethCountries.prototype.enter = function (domNode, element) {
         Choropleth.prototype.enter.apply(this, arguments);
-        element.classed("map_Choropleth", true);    
+        element.classed("map_Choropleth", true);
 
         this.projection(this.worldProjection());
 

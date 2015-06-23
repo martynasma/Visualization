@@ -1,3 +1,8 @@
+/**
+* @file HPCC VIZ MorphText Widget
+* @author HPCC Systems
+*/
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,6 +11,10 @@
         root.other_MorphText = factory(root.common_SVGWidget);
     }
 }(this, function (SVGWidget) {
+    /**
+     * @class other_MorphText
+     * @extends common_SVGWidget
+     */
     function MorphText() {
         SVGWidget.call(this);
 
@@ -14,6 +23,12 @@
         this._reverse = false;
     }
     MorphText.prototype = Object.create(SVGWidget.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof other_MorphText
+     * @private
+     */
     MorphText.prototype._class += " other_MorphText";
 
     MorphText.prototype.text = function (_) {
@@ -52,6 +67,15 @@
         return this;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @memberof other_MorphText
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     MorphText.prototype.enter = function (domNode, element) {
         if (!this._fontSize) {
             var style = window.getComputedStyle(domNode, null);
@@ -62,6 +86,13 @@
         ;
     };
 
+    /**
+     * Returns the date and time in the folliwng format: "sun july 4 2015 1:00pm"
+     * @method dateTime
+     * @memberof other_MorphText
+     * @instance
+     * @private
+     */
     MorphText.prototype.dateTime = function () {
         var d = new Date(),
             seconds = d.getSeconds().toString().length === 1 ? '0' + d.getSeconds() : d.getSeconds(),
@@ -73,6 +104,13 @@
         return days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ' ' + d.getFullYear() + ' ' + hours + ':' + minutes + ':' + seconds + ampm;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof other_MorphText
+     * @instance
+     * @protected
+     */
     MorphText.prototype.update = function (domNode, element) {
         var context = this;
         var text = this._textElement.selectAll("text")

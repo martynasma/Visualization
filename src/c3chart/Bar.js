@@ -1,3 +1,8 @@
+/**
+ * @file c3 Chart Bar
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,21 +11,23 @@
         root.c3chart_Bar = factory(root.c3chart_Column);
     }
 }(this, function (Column) {
+    /**
+     * @class c3chart_Bar
+     * @extends c3chart_Column
+     */
     function Bar(target) {
         Column.call(this);
 
         this._config.axis.rotated = true;
     }
 
-    /**
-     * Publish Params Common To Other Libraries
-     */
-
-    /**
-     * Publish Params Unique To This Widget
-     */   
-    
     Bar.prototype = Object.create(Column.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof c3chart_Bar
+     * @private
+     */
     Bar.prototype._class += " c3chart_Bar";
 
     return Bar;

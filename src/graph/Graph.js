@@ -6,6 +6,12 @@
         root.graph_Graph = factory(root.d3, root.common_SVGWidget, root.common_Palette, root.api_IGraph, root.graph_Vertex, root.graph_Edge, root.graph_GraphData, root.graph_GraphLayouts, root.other_Bag);
     }
 }(this, function (d3, SVGWidget, Palette, IGraph, Vertex, Edge, GraphData, GraphLayouts, Bag) {
+    /**
+     * @class graph_Edge
+     * @extends common_SVGWidget
+     * @extends api_IGraph
+     * @implements api_IGraph
+     */
     function Graph() {
         SVGWidget.call(this);
         IGraph.call(this);

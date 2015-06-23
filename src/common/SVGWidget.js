@@ -1,3 +1,8 @@
+/**
+ * @file Base SVGWidget Class
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,6 +11,12 @@
         root.common_SVGWidget = factory(root.d3, root.common_Widget, root.common_Transition);
     }
 }(this, function (d3, Widget, Transition) {
+    /**
+     * @class common_SVGWidget
+     * @abstract
+     * @extends common_Widget
+     * @noinit
+     */
     function SVGWidget() {
         Widget.call(this);
 
@@ -14,12 +25,26 @@
         this._boundingBox = null;
 
         this.transition = new Transition(this);
-
-        this._drawStartPos = "center"; 
+        /**
+         * Specifies the draw start position depending on widget type "origin" (x:0, y:0) or "center"
+         * @member {string} _drawStartPos
+         * @memberof common_SVGWidget
+         * @private
+         */
+        this._drawStartPos = "center";
     }
     SVGWidget.prototype = Object.create(Widget.prototype);
 
-    //  Properties  ---
+    /**
+     * Moves widget to specified coodinates relative to parent container.
+     * @method move
+     * @memberof common_SVGWidget
+     * @instance
+     * @param {Object} _ An object with the properties "x" and "y".
+     * @param {Mixed} _.x Horizontal position in pixels.
+     * @param {Mixed} _.y Vertical position in pixels.
+     * @returns {Widget}
+     */
     SVGWidget.prototype.move = function (_, transitionDuration) {
         var retVal = this.pos.apply(this, arguments);
         if (arguments.length) {
@@ -30,6 +55,18 @@
         return retVal;
     };
 
+    /**
+     * Sets initial size of widget.
+     * @method size
+     * @memberof common_SVGWidget
+     * @instance
+     * @param {Object} [size] An object with the properties "width" and "height".
+     * @param {Mixed} [size.width] Width in pixels.
+     * @param {Mixed} [size.height] Height in pixels.
+     * @returns {Widget}
+     * @example <caption>Example with specific height and width in pixels.</caption>
+     * widget.size({width:"100",height:"100"}).render();
+     */
     SVGWidget.prototype.size = function (_) {
         var retVal = Widget.prototype.size.apply(this, arguments);
         if (arguments.length) {
@@ -38,6 +75,20 @@
         return retVal;
     };
 
+    /**
+     * Resizes widget. If no argument is passed, it will resize to the maximum container width and height.
+     * @method resize
+     * @memberof common_SVGWidget
+     * @instance
+     * @param {Object} [size] An object with the properties "width" and "height".
+     * @param {Mixed} [size.width] Width in pixels.
+     * @param {Mixed} [size.height] Height in pixels.
+     * @returns {Widget}
+     * @example <caption>Example with specific height and width in pixels.</caption>
+     * widget.resize({width:"100",height:"100"}).render();
+     * @example <caption>Example resize to maximum container dimensions</caption>
+     * widget.resize().render();
+     */
     SVGWidget.prototype.resize = function (size) {
         var retVal = Widget.prototype.resize.apply(this, arguments);
         this._parentRelativeDiv
@@ -69,6 +120,16 @@
         return retVal;
     };
 
+    /**
+     * Sets target container for widget to render in. (Normally a DIV)
+     * @method target
+     * @memberof common_SVGWidget
+     * @instance
+     * @param {String|HTMLElement} [size] An object with the properties "width" and "height".
+     * @returns {Widget}
+     * @example <caption>Example with specific height and width in pixels.</caption>
+     * widget.target("myDIV").render();
+     */
     SVGWidget.prototype.target = function (_) {
         if (!arguments.length) return this._target;
         if (this._target && _ && (this._target.__data__.id !== _.__data__.id)) {
@@ -280,6 +341,20 @@
         return result;
     };
 
+    /**
+     * Returns the first insersection point of a circle and a line. Given two line end points and given the widget is a circle, returns an object with [x,y] cordinates as properties.
+     * @method intersectCircle
+     * @memberof common_SVGWidget
+     * @instance
+     * @param {Object} [pointA] An object with the properties "x" and "y".
+     * @param {Mixed} [pointA.x] End point x coordinate of the line.
+     * @param {Mixed} [pointA.y] End point y coordinate of the line.
+     * @param {Object} [pointB] An object with the properties "x" and "y".
+     * @param {Mixed} [pointB.x] End point x coordinate of the line.
+     * @param {Mixed} [pointB.y] End point y coordinate of hte line.
+     * @returns {Object|Null}
+     * @example //TODO
+     */
     SVGWidget.prototype.intersectCircle = function (pointA, pointB) {
         var center = this.getOffsetPos();
         var radius = this.radius();
@@ -294,7 +369,7 @@
         return Math.sqrt((pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y));
     };
 
-    //  IE Fixers  ---    
+    //  IE Fixers  ---
     SVGWidget.prototype._pushMarkers = function (element, d) {
         if (this.svgMarkerGlitch) {
             element = element || this._element;

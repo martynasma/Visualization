@@ -6,16 +6,20 @@
         root.layout_Grid = factory(root.d3, root.common_HTMLWidget, root.layout_Cell, root.common_Text, root.chart_Pie, root.chart_MultiChart, root.c3chart_Line);
     }
 }(this, function (d3, HTMLWidget, Cell, Text, Pie, MultiChart, Line) {
+    /**
+     * @class layout_Grid
+     * @extends common_HTMLWidget
+     */
     function Grid() {
         HTMLWidget.call(this);
 
         this._tag = "div";
-        
+
         this._colCount = 0;
         this._rowCount = 0;
         this._colSize = 0;
         this._rowSize = 0;
-        
+
         this.content([]);
     }
     Grid.prototype = Object.create(HTMLWidget.prototype);
@@ -111,7 +115,7 @@
         });
         return retVal;
     };
-    
+
     Grid.prototype.childMoved = Grid.prototype.debounce(function (domNode, element) {
         this.render();
     }, 250);
@@ -130,23 +134,23 @@
             Math.floor((e.clientY - this._offsetY)/this._rowSize)
         ];
     };
-    
+
     Grid.prototype.overHandle = function (e) {
         var handle = '';
         var handleSize = this._dragCell.handleSize();
-        
+
         //Determines which edge cell (if any) this._currLoc is hovering over
         //An "edge" meaning a dropCell on the exterrior edge of a surface that covers many cells
         var onSouthEdge = this._dragCell.gridRowSpan() === this._currLoc[1] - this._dragCell.gridRow() + 1;
         var onNorthEdge = this._dragCell.gridRow() === this._currLoc[1];
         var onEastEdge = this._dragCell.gridColSpan() === this._currLoc[0] - this._dragCell.gridCol() + 1;
         var onWestEdge = this._dragCell.gridCol() === this._currLoc[0];
-        
+
         var top = this._offsetY + ((this._currLoc[1]) * this._rowSize);
         var left = this._offsetX + ((this._currLoc[0]) * this._colSize);
         var width = this._colSize - this.gutter();
         var height = this._rowSize - this.gutter();
-        
+
         if(Math.ceil(top + height) >= e.clientY && Math.floor(top + height - handleSize) <= e.clientY && onSouthEdge){
             handle = 's';//within SOUTH handle range
         }
@@ -161,40 +165,40 @@
         }
         return handle;
     };
-    
+
     Grid.prototype.createDropTarget = function (loc) {
         var col = loc[0] - this._dragCellOffsetX;
         var row = loc[1] - this._dragCellOffsetY;
         var colSpan = this._dragCell.gridColSpan();
         var rowSpan = this._dragCell.gridRowSpan();
-        
+
         var dropTarget = document.createElement('div');
         dropTarget.id = 'grid-drop-target'+this.id();
         dropTarget.className = 'grid-drop-target';
-        
+
         this._target.appendChild(dropTarget);
         this.updateDropTarget(col,row,colSpan,rowSpan);
     };
-    
+
     Grid.prototype.setGridOffsets = function () {
         this._offsetX = this._element.node().getBoundingClientRect().left + (this.gutter()/2);
         this._offsetY = this._element.node().getBoundingClientRect().top + (this.gutter()/2);
     };
-    
+
     Grid.prototype.updateDropTarget = function (col,row,colSpan,rowSpan) {
         var top,left,width,height;
         top = this._offsetY + (row * this._rowSize);
         left = this._offsetX + (col * this._colSize);
         width = colSpan * this._colSize - this.gutter();
         height = rowSpan * this._rowSize - this.gutter();
-        
+
         var dropTarget = document.getElementById('grid-drop-target'+this.id());
         dropTarget.style.top = top + 'px';
         dropTarget.style.left = left + 'px';
         dropTarget.style.width = width + 'px';
         dropTarget.style.height = height + 'px';
     };
-    
+
     Grid.prototype.moveDropTarget = function (loc) {
         if(this._handle){
             var pivotCell = [];
@@ -268,10 +272,10 @@
                 this._sizeY = this._dragCell.gridRowSpan();
             }
         }
-        
+
         this.updateDropTarget(this._locX,this._locY,this._sizeX,this._sizeY);
     };
-    
+
     Grid.prototype.updateCells = function (cellWidth, cellHeight) {
         var context = this;
         var rows = this.contentDiv.selectAll(".cell_" + this._id).data(this.content(), function (d) { return d._id; });
@@ -291,21 +295,21 @@
         var drag = d3.behavior.drag()
             .on("dragstart", function (d) {
                 d3.event.sourceEvent.stopPropagation();
-        
+
                 context._dragCell = d;
-                
+
                 context.setGridOffsets();
                 context.findCurrentLocation(d3.event.sourceEvent);
-                
+
                 context._element.selectAll(".dragHandle")
                     .style("visibility", "hidden")
                 ;
-                
+
                 context._handle = context.overHandle(d3.event.sourceEvent);
                 if(context._dragCell._dragHandles.indexOf(context._handle) === -1){
                     context._handle = undefined;
                 }
-                
+
                 context._dragCellOffsetX = context._currLoc[0] - d.gridCol();
                 context._dragCellOffsetY = context._currLoc[1] - d.gridRow();
                 context.createDropTarget(context._currLoc);
@@ -329,11 +333,11 @@
             })
             .on("dragend", function () {
                 d3.event.sourceEvent.stopPropagation();
-        
+
                 context._element.selectAll(".dragHandle")
                     .style("visibility", null)
                 ;
-        
+
                 if (context._handle) {
                     context._dragCell.gridRow(context._locY);
                     context._dragCell.gridRowSpan(context._sizeY);
@@ -378,7 +382,7 @@
                 }
                 var gridDropTarget = document.getElementById('grid-drop-target'+context.id());
                 gridDropTarget.parentNode.removeChild(gridDropTarget);
-                
+
                 setTimeout(function () {
                     context.contentDiv.selectAll(".cell_" + context._id)
                         .classed("dragItem", false)
@@ -388,13 +392,13 @@
 
                 context._dragCell = null;
             });
-            
-        if(this.designMode()){ 
+
+        if(this.designMode()){
             this.contentDiv.selectAll(".cell_" + this._id).call(drag);
         } else {
             this.contentDiv.selectAll(".cell_" + this._id).on(".drag", null);
         }
-        
+
         rows.style("left", function (d) { return d.gridCol() * cellWidth + context.gutter() / 2 + "px"; })
             .style("top", function (d) { return d.gridRow() * cellHeight + context.gutter() / 2 + "px"; })
             .style("width", function (d) { return d.gridColSpan() * cellWidth - context.gutter() + "px"; })
@@ -433,7 +437,7 @@
         var dropRows = this.dropDiv.selectAll(".dropCell_" + this._id).data(dropCells);
         dropRows.enter().append("div")
             .attr("class", "dropCell dropCell_" + this._id);
-    
+
         var context = this;
         dropRows
             .style("position", "absolute")
@@ -447,7 +451,7 @@
 
     Grid.prototype.update = function (domNode, element) {
         HTMLWidget.prototype.update.apply(this, arguments);
-        
+
         this._parentElement.style("overflow-x", this.fitTo() === "width" ? "hidden" : null);
         this._parentElement.style("overflow-y", this.fitTo() === "width" ? "scroll" : null);
         var dimensions = this.getDimensions();

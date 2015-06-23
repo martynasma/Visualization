@@ -1,3 +1,8 @@
+/**
+ * @file HPCC VIZ Column
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -5,20 +10,48 @@
     } else {
         root.chart_Column = factory(root.d3, root.chart_XYAxis, root.api_INDChart);
     }
-}(this, function (d3, XYAxis, INDChart) {
+}(this, function (d3, XYAxis, I2DChart) {
+    /**
+     * @class chart_Column
+     * @extends chart_XYAxis
+     * @extends api_I2DChart
+     * @implements api_I2DChart
+     */
     function Column(target) {
         XYAxis.call(this);
         INDChart.call(this);
 
+        /**
+         * Linear Gap
+         * @member {number} _linearGap
+         * @memberof chart_Column
+         * @default 25
+         * @private
+         */
         this._linearGap = 25;
     }
     Column.prototype = Object.create(XYAxis.prototype);
-    Column.prototype._class += " chart_Column";
     Column.prototype.implements(INDChart.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof chart_Column
+     * @private
+     */
+    Column.prototype._class += " chart_Column";
 
     Column.prototype.publish("paletteID", "default", "set", "Palette ID", Column.prototype._palette.switch(),{tags:['Basic','Shared']});
     Column.prototype.publish("stacked", false, "boolean", "Stacked Bars");
 
+    /**
+     * Updates chart with options from publish parameters.
+     * @method updateChart
+     * @memberof chart_Column
+     * @instance
+     * @private
+     * @param {HTMLElement} domeNode HTML/SVG DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Column.prototype.updateChart = function (domNode, element, margin, width, height) {
         var context = this;
 

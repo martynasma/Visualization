@@ -1,3 +1,8 @@
+/**
+ * @file AmChart CommonSerial
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -7,18 +12,32 @@
     }
 
 }(this, function(d3, HTMLWidget, AmCharts) {
+    /**
+     * @class amchart_CommonSerial
+     * @abstract
+     * @extends common_HTMLWidget
+     * @noinit
+     */
     function CommonSerial() {
         HTMLWidget.call(this);
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof amchart_CommonSerial
+         * @private
+         */
         this._tag = "div";
-
+        /**
+         * AmChart widget/chart object.
+         * @member {Object} _chart
+         * @memberof amchart_CommonSerial
+         * @private
+         */
         this._chart = {};
     }
 
     CommonSerial.prototype = Object.create(HTMLWidget.prototype);
 
-    /**
-     * Publish Params Common To Other Libraries
-     */
     CommonSerial.prototype.publish("fontSize", null, "number", "Font Size",null,{tags:['Basic','Shared']});
     CommonSerial.prototype.publish("fontFamily", null, "string", "Font Name",null,{tags:['Basic','Shared','Shared']});
     CommonSerial.prototype.publish("fontColor", null, "html-color", "Font Color",null,{tags:['Basic','Shared']});
@@ -50,9 +69,6 @@
 
     CommonSerial.prototype.publish("axisLineWidth", 1, "number", "Axis Line Width",null,{tags:['Intermediate','Shared']});
 
-    /**
-     * Publish Params Unique To This Widget
-     */
     CommonSerial.prototype.publish("axisAlpha", 1, "number", "Axis Alpha",null,{tags:['Intermediate']}); // share?
 
     CommonSerial.prototype.publish("marginLeft", null, "number", "Margin (Left)",null,{tags:['Intermediate']});
@@ -96,6 +112,14 @@
     CommonSerial.prototype.publish("useImgPatterns", false, "boolean", "Enable Image Pattern backgrounds",null,{tags:['Private']});
     CommonSerial.prototype.publish("imgPatternArr", '["../ampatterns/black/pattern2.png"]', "string", "Background Pattern Images (Not used if '[]')",null,{inputType:'textarea',tags:['Private']});
 
+    /**
+     * Updates underlying AmChart widget object, with options from publish parameters.
+     * @method updateChartOptions
+     * @memberof amchart_CommonSerial
+     * @instance
+     * @private
+     * @returns {Object}
+     */
     CommonSerial.prototype.updateChartOptions = function() {
 
         this._chart.dataDateFormat = this.dataDateFormat();
@@ -162,6 +186,16 @@
         return this._chart;
     };
 
+    /**
+     * Builds AmChart graph object that becomes a property of the AmChart widget object.
+     * @method buildGraphObj
+     * @private
+     * @memberof amchart_Candle
+     * @instance
+     * @param {string} gType Value from this._gType.
+     * @param {number} i Graph object index number.
+     * @returns {Widget}
+     */
     CommonSerial.prototype.buildGraphObj = function(gType,i) {
         var context = this;
         var gObj = {};
@@ -201,6 +235,15 @@
         return gObj;
     };
 
+    /**
+     * Formats data passed via data() correctly for AmCharts underlying widget.
+     * @method formatData
+     * @memberof amchart_CommonSerial
+     * @instance
+     * @private
+     * @params {Array} dataArr Data array from data() method.
+     * @returns {Array}
+     */
     CommonSerial.prototype.formatData = function(dataArr) {
         var dataObjArr = [];
         var context = this;
@@ -214,6 +257,19 @@
         return dataObjArr;
     };
 
+    /**
+     * Sets the columns for the data being passed into the widget via .data() method.
+     * @method columns
+     * @memberof amchart_CommonSerial
+     * @instance
+     * @public
+     * @param {String[]} _ An array of strings representing the column names for data passed to widget.
+     * @returns {Widget}
+     * @example widget
+     * .columns(["ID", "Year 1", "Year 2"])
+     * .data([ [40, 66, 60], [30, 98, 92]  ])
+     * .render();
+     */
     CommonSerial.prototype.columns = function(colArr) {
         if (!arguments.length) return this._columns;
         var retVal = HTMLWidget.prototype.columns.apply(this, arguments);
@@ -230,6 +286,15 @@
         return retVal;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @protected
+     * @instance
+     * @memberof amchart_CommonSerial
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     CommonSerial.prototype.enter = function(domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
         var initObj = {
@@ -239,6 +304,15 @@
         this._chart = AmCharts.makeChart(domNode, initObj);
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof amchart_CommonSerial
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     CommonSerial.prototype.update = function(domNode, element) {
         HTMLWidget.prototype.update.apply(this, arguments);
 

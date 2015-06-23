@@ -1,3 +1,8 @@
+/**
+ * @file AmChart Pie
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,27 +11,46 @@
         root.amchart_Pie = factory(root.d3, root.common_HTMLWidget, root.AmCharts, root.api_I2DChart);
     }
 }(this, function(d3, HTMLWidget, AmCharts, I2DChart) {
+    /**
+     * @class amchart_Pie
+     * @extends common_HTMLWidget
+     * @extends api_I2DChart
+     * @implements api_I2DChart
+     */
     function Pie() {
         HTMLWidget.call(this);
+
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof amchart_Pie
+         * @private
+         */
         this._tag = "div";
+        /**
+         * AmChart widget/chart object.
+         * @member {Object} _chart
+         * @memberof amchart_Pie
+         * @private
+         */
         this._chart = {};
     }
 
     Pie.prototype = Object.create(HTMLWidget.prototype);
     Pie.prototype.implements(I2DChart.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof amchart_Pie
+     * @private
+     */
     Pie.prototype._class += " amchart_Pie";
 
-    /**
-     * Publish Params Common To Other Libraries
-     */
     Pie.prototype.publish("paletteID", "default", "set", "Palette ID", Pie.prototype._palette.switch(), {tags:['Basic','Shared']});
     Pie.prototype.publish("fontFamily", "Verdana", "string", "Label Font Family",null,{tags:['Basic','Shared']});
     Pie.prototype.publish("fontSize", 11, "number", "Label Font Size",null,{tags:['Basic','Shared']});
     Pie.prototype.publish("fontColor", null, "html-color", "Label Font Color",null,{tags:['Basic','Shared']});
 
-    /**
-     * Publish Params Unique To This Widget
-     */
     Pie.prototype.publish("tooltipTemplate","[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>", "string", "Tooltip Text",null,{tags:['Intermediate']});
 
     Pie.prototype.publish("Depth3D", 10, "number", "3D Depth (px)",null,{tags:['Basic']});
@@ -46,6 +70,14 @@
 
     Pie.prototype.publish("labelPosition", "right", "set", "Label Position", ["left","right"],{tags:['Intermediate']});
 
+    /**
+     * Updates underlying AmChart widget object, with options from publish parameters.
+     * @method updateChartOptions
+     * @memberof amchart_Pie
+     * @instance
+     * @private
+     * @returns {Object}
+     */
     Pie.prototype.updateChartOptions = function() {
         var context = this;
 
@@ -98,6 +130,15 @@
         return this._chart;
     };
 
+    /**
+     * Formats data passed via data() correctly for AmCharts underlying widget.
+     * @method formatData
+     * @memberof amchart_Pie
+     * @instance
+     * @private
+     * @params {Array} dataArr Data array from data() method.
+     * @returns {Array}
+     */
     Pie.prototype.formatData = function(dataArr){
         var dataObjArr = [];
         var context = this;
@@ -111,6 +152,19 @@
         return dataObjArr;
     };
 
+    /**
+     * Sets the columns for the data being passed into the widget via .data() method.
+     * @method columns
+     * @memberof amchart_Pie
+     * @instance
+     * @public
+     * @param {String[]} _ An array of strings representing the column names for data passed to widget.
+     * @returns {Widget}
+     * @example widget
+     * .columns(["ID", "Year 1", "Year 2"])
+     * .data([ [40, 66, 60], [30, 98, 92]  ])
+     * .render();
+     */
     Pie.prototype.columns = function(colArr) {
         if (!arguments.length) return this._columns;
         var retVal = HTMLWidget.prototype.columns.apply(this, arguments);
@@ -126,6 +180,15 @@
         return retVal;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @memberof amchart_Pie
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Pie.prototype.enter = function(domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
         var initObj = {
@@ -135,6 +198,15 @@
         this._chart = AmCharts.makeChart(domNode, initObj);
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof amchart_Pie
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Pie.prototype.update = function(domNode, element) {
         this._palette = this._palette.switch(this.paletteID());
 

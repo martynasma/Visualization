@@ -1,3 +1,8 @@
+/**
+ * @file Transition Object
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,6 +11,9 @@
         root.common_Transition = factory();
     }
 }(this, function () {
+    /**
+     * @class common_Transition
+     */
     function Transition(widget) {
         this._widget = widget;
         this._duration = 250;
@@ -31,6 +39,15 @@
         return this._widget;
     };
 
+    /**
+     * TODO
+     * @method update
+     * @memberof common_Shape
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML/SVG DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Transition.prototype.apply = function (selection) {
         if (this._duration || this._delay) {
             return selection.transition()

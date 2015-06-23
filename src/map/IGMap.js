@@ -6,6 +6,9 @@
         root.map_IGMap = factory(root.common_Shape, root.graph_Edge);
     }
 }(this, function (Shape, Edge) {
+    /**
+     * @interface map_IGMap
+     */
     function IGMap() {
     }
 

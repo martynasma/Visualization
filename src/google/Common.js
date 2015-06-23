@@ -1,3 +1,8 @@
+/**
+* @file Google Chart Common
+* @author HPCC Systems
+*/
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,24 +11,48 @@
         root.google_Common = factory(root.d3, root.common_HTMLWidget);
     }
 }(this, function (d3, HTMLWidget) {
-
+    /**
+     * @class google_Common
+     * @extends common_HTMLWidget
+     * @abstract
+     * @noinit
+     */
     function Common(tget) {
         HTMLWidget.call(this);
-
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof google_Common
+         * @private
+         */
         this._tag = "div";
 
         this.columns([]);
-        this.data([],{tags:['Advanced']});
+        this.data([]);
+        /**
+         * Google Chart DataTable Object
+         * @member {string} _data_google
+         * @memberof google_Common
+         * @private
+         */
         this._data_google = [];
-
+        /**
+         * Google widget/chart object.
+         * @member {Object} _chart
+         * @memberof amchart_CommonFunnel
+         * @private
+         */
         this._chart = null;
     }
     Common.prototype = Object.create(HTMLWidget.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof google_Common
+     * @private
+     */
     Common.prototype._class += " google_Common";
 
-    /**
-     * Publish Params Common To Other Libraries
-     */
     Common.prototype.publish("fontSize", null, "number", "Font Size",null,{tags:['Basic','Shared']});
     Common.prototype.publish("fontFamily", null, "string", "Font Name",null,{tags:['Basic','Shared']});
     Common.prototype.publish("fontColor", null, "html-color", "Font Color",null,{tags:['Basic','Shared']});
@@ -37,9 +66,6 @@
     Common.prototype.publish("legendFontBold", false, "boolean", "Legend Font Bold",null,{tags:['Private']});
     Common.prototype.publish("legendFontItalic", false, "boolean", "Legend Font Italic",null,{tags:['Private']});
 
-    /**
-     * Publish Params Unique To This Widget
-     */
     Common.prototype.publish("chartAreaWidth", null, "string", "Chart Area Width",null,{tags:['Advanced']}); // num or string
     Common.prototype.publish("chartAreaHeight", null, "string", "Chart Area Height",null,{tags:['Advanced']});
     Common.prototype.publish("chartAreaTop", null, "string", "Chart Area Distance From Top",null,{tags:['Advanced']}); // num or string (google default auto)
@@ -89,6 +115,14 @@
         return retVal;
     };
 
+    /**
+     * Builds and returns a google configuration object based on publish param values.
+     * @method getChartOptions
+     * @memberof google_Common
+     * @instance
+     * @private
+     * @returns {Object}
+     */
     Common.prototype.getChartOptions = function () {
         var colors = this._columns.filter(function (d, i) { return i > 0; }).map(function (row) {
             return this._palette(row);
@@ -135,11 +169,21 @@
         };
         return chartOptions;
     };
-    
+
+    // TODO
     Common.prototype.getNumSeries = function () {
         return this._columns.slice(1).length;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @memberof google_Common
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Common.prototype.enter = function (domNode, element) {
         element.style("overflow", "hidden");
 
@@ -154,6 +198,15 @@
         });
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof google_Common
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML/SVG DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Common.prototype.update = function(domNode, element) {
         HTMLWidget.prototype.update.apply(this, arguments);
         this._chart.draw(this._data_google, this.getChartOptions());

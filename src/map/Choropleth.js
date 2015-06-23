@@ -6,6 +6,14 @@
         root.map_Choropleth = factory(root.d3, root.common_SVGWidget, root.map_IChoropleth);
     }
 }(this, function (d3, SVGWidget, IChoropleth) {
+    /**
+     *
+     * @class map_Choropleth
+     * @extends common_SVGWidget
+     * @extends map_IChoropleth
+     * @implements map_IChoropleth
+     * @noinit
+     */
     function Choropleth() {
         SVGWidget.call(this);
         IChoropleth.call(this);

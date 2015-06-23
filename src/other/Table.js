@@ -1,3 +1,8 @@
+/**
+* @file HPCC VIZ Table Widget
+* @author HPCC Systems
+*/
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,19 +11,55 @@
         root.other_Table = factory(root.d3, root.common_HTMLWidget, root.other_Paginator, root.other_Bag);
     }
 }(this, function (d3, HTMLWidget, Paginator, Bag) {
+    /**
+     * @class other_Table
+     * @extends common_HTMLWidget
+     */
     function Table() {
         HTMLWidget.call(this);
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof google_Common
+         * @private
+         */
         this._tag = "div";
         this._currentSort = "";
         this._currentSortOrder = 1;
         this._columns = [];
+        /**
+         * Paginator widget/object instance.
+         * @member {Object} _paginator
+         * @memberof other_Table
+         * @private
+         */
         this._paginator = new Paginator();
+        /**
+         * Selection Bag widget/object instance.
+         * @member {Object} _selectionBag
+         * @memberof other_Table
+         * @private
+         */
         this._selectionBag = new Bag.Selection();
         this._selectionPrevClick = null;
     }
     Table.prototype = Object.create(HTMLWidget.prototype);
+    /**
+     * Specifies the class name of the container.
+     * @member {string} _class
+     * @memberof other_Table
+     * @private
+     */
     Table.prototype._class += " other_Table";
 
+    /**
+     * Populates Data and Columns with test data.
+     * @method testData
+     * @memberof other_Table
+     * @instance
+     * @public
+     * @returns {Widget}
+     */
     Table.prototype.testData = function () {
         this
             .columns(["Lat", "Long", "Pin"])
@@ -41,6 +82,15 @@
     Table.prototype.publishProxy("itemsPerPage", "_paginator");
     Table.prototype.publishProxy("pageNumber", "_paginator", "pageNumber",1);
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @memberof other_Table
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Table.prototype.enter = function (domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
         this._parentElement.style("overflow", "auto");
@@ -50,6 +100,13 @@
         this.tbody = this.table.append("tbody");
     };
 
+    /**
+     * Returns a temporary cell.
+     * @method _generateTempCell
+     * @memberof other_Table
+     * @instance
+     * @private
+     */
     Table.prototype._generateTempCell = function() {
         var trow = this.tbody.selectAll("tr").data([[0]]);
         trow
@@ -71,6 +128,14 @@
         return tcell;
     };
 
+    /**
+     * Returns a d3 selection of selected cell.
+     * @method _generateTempCell
+     * @memberof other_Table
+     * @instance
+     * @param {String} Selected cell text.
+     * @private
+     */
     Table.prototype._createSelectionObject = function (d) {
         var context = this;
         return {
@@ -81,6 +146,15 @@
         };
     };
 
+    /**
+     * Returns the maximum items per page for given widget dimensions.
+     * @method _calcRowsPerPage
+     * @memberof other_Table
+     * @instance
+     * @private
+     * @param {D3Selection} d3 selection of header row.
+     * @returns {Number}
+     */
     Table.prototype._calcRowsPerPage = function(th) {
         if (this._paginator.numItems() === 0) { // only run on first render
             this._paginator.numItems(1);
@@ -95,6 +169,15 @@
         return ipp;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof other_Table
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML/SVG DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Table.prototype.update = function (domNode, element) {
         HTMLWidget.prototype.update.apply(this, arguments);
         var context = this;
@@ -220,11 +303,28 @@
         this._paginator.render();
     };
 
+    /**
+     * The function that is executed after render. It is used for doing destroying/cleanup.
+     * @method exit
+     * @memberof common_Widget
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Table.prototype.exit = function (domNode, element) {
         this._paginator.target(null);
         HTMLWidget.prototype.exit.apply(this, arguments);
     };
 
+    /**
+     * TODO
+     * @method headerClick
+     * @memberof other_Table
+     * @instance
+     * @private
+     * @param {type} column TODO
+     */
     Table.prototype.headerClick = function (column) {
         var context = this;
         if (this._currentSort !== column) {
@@ -246,6 +346,15 @@
         this.render();
     };
 
+    /**
+     * TODO
+     * @method selection
+     * @memberof other_Table
+     * @instance
+     * @private
+     * @param {type} _ TODO
+     * @returns {Widget}
+     */
     Table.prototype.selection = function (_) {
         if (!arguments.length) return this._selectionBag.get().map(function (d) { return d._id; });
         this._selectionBag.set(_.map(function (row) {
@@ -253,7 +362,14 @@
         }, this));
         return this;
     };
-
+    /**
+     * TODO
+     * @method selectionBagClick
+     * @memberof other_Table
+     * @instance
+     * @private
+     * @param {type} d TODO
+     */
     Table.prototype.selectionBagClick = function (d) {
         if (d3.event.shiftKey) {
             var inRange = false;
@@ -274,6 +390,13 @@
         }
     };
 
+    /**
+     * (event) Overridable click callback function.
+     * @method click
+     * @memberof other_Table
+     * @param {type} row
+     * @param {type} column
+     */
     Table.prototype.click = function (row, column) {
         console.log("Click:  " + JSON.stringify(row) + ", " + column);
     };

@@ -1,3 +1,8 @@
+/**
+* @file HPCC VIZ Comms Object
+* @author HPCC Systems
+*/
+
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -6,6 +11,9 @@
         root.other_Comms = factory();
     }
 }(this, function () {
+    /**
+     * @class ESPUrl
+     */
     function ESPUrl() {
         this._protocol = "http:";
         this._hostname = "localhost";
@@ -92,6 +100,11 @@
                 (overrides.pathname ? overrides.pathname : this._pathname);
     };
 
+    /**
+     * @class Comms.ESPMappings
+     * @constructs Comms.ESPMappings
+     * @param mappings
+     */
     function ESPMappings(mappings) {
         this._mappings = mappings;
         this._reverseMappings = {};
@@ -103,10 +116,23 @@
         }
     }
 
+    /**
+     * @method contains
+     * @memberof Comms.ESPMappings
+     * @param {type} resultName
+     * @param {type} origField
+     * @TODO returns
+     */
     ESPMappings.prototype.contains = function (resultName, origField) {
         return exists(resultName + "." + origField, this._mappings);
     };
 
+    /**
+     * @method mapResult
+     * @memberof Comms.ESPMappings
+     * @param {type} response
+     * @param {type} resultName
+     */
     ESPMappings.prototype.mapResult = function (response, resultName) {
         var mapping = this._mappings[resultName];
         if (mapping) {
@@ -133,12 +159,21 @@
         }
     };
 
+    /**
+     * @method mapResponse
+     * @memberof Comms.ESPMappings
+     * @param {type} response
+     */
     ESPMappings.prototype.mapResponse = function (response) {
         for (var key in response) {
             this.mapResult(response, key);
         }
     };
 
+    /**
+     * @class Comms
+     * @extends ESPUrl
+     */
     function Comms() {
         ESPUrl.call(this);
         this._proxyMappings = {};
@@ -273,6 +308,10 @@
         }
     };
 
+    /**
+     * @class WsECL
+     * @extends Comms
+     */
     function WsECL() {
         Comms.call(this);
 
@@ -370,6 +409,9 @@
         this.call({target: this._target, query: this._query}, request, callback);
     };
 
+    /**
+     * @class WsWorkunits
+     */
     function WsWorkunits() {
         Comms.call(this);
 
@@ -606,7 +648,10 @@
             callback(context.postFilter(request, this._resultNameCache));
         }
     };
-
+    /**
+     * @class WsWorkunits_GetStats
+     * @extends Comms
+     */
     function WsWorkunits_GetStats() {
         Comms.call(this);
 
@@ -656,6 +701,10 @@
     };
 
     //  HIPIERoxie  ---
+    /*
+     * @class HIPIERoxie
+     * @extends Comms
+     */
     function HIPIERoxie() {
         Comms.call(this);
     }
@@ -690,6 +739,10 @@
     };
 
     //  HIPIEWorkunit  ---
+    /**
+     * @class HIPIEWorkunit
+     * @extends WsWorkunits
+     */
     function HIPIEWorkunit() {
         WsWorkunits.call(this);
 
@@ -770,6 +823,10 @@
     };
 
     //  HIPIEDatabomb  ---
+    /**
+     * @class HIPIEDatabomb
+     * @extends HIPIEWorkunit
+     */
     function HIPIEDatabomb() {
         HIPIEWorkunit.call(this);
     }
@@ -794,7 +851,16 @@
             callback(context._resultNameCache);
         }, 0);
     };
-
+    /**
+     * @module Comms
+     * @borrows Comms.ESPMappings as ESPMappings
+     * @borrows ESPUrl as ESPUrl
+     * @borrows WsECL as WsECL
+     * @borrows WsWorkunits as WsWorkunits
+     * @borrows HIPIERoxie as HIPIERoxie
+     * @borrows HIPIEWorkunit as HIPIEWorkunit
+     * @borrows HIPIEDatabomb as HIPIEDatabomb
+     */
     return {
         Basic: Basic,
         ESPMappings: ESPMappings,
@@ -804,6 +870,14 @@
         HIPIERoxie: HIPIERoxie,
         HIPIEWorkunit: HIPIEWorkunit,
         HIPIEDatabomb: HIPIEDatabomb,
+        /**
+         * Create a ESP Connection Object
+         * @method createESPConnection
+         * @memberof Comms
+         * @param {String} url A Roxie/Hippie URL.
+         * @returns {null}
+         * @example //TODO
+         */
         createESPConnection: function (url) {
             url = url || document.URL;
             var testURL = new ESPUrl()

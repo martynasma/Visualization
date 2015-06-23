@@ -1,3 +1,8 @@
+/**
+ * @file AmChart CommonRadar
+ * @author HPCC Systems
+ */
+
 "use strict";
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -7,10 +12,28 @@
     }
 
 }(this, function(d3, HTMLWidget, AmCharts) {
+    /**
+     * @class amchart_CommonRadar
+     * @abstract
+     * @extends common_HTMLWidget
+     * @noinit
+     */
     function CommonRadar() {
         HTMLWidget.call(this);
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof amchart_CommonRadar
+         * @private
+         */
         this._tag = "div";
 
+        /**
+         * AmChart widget/chart object.
+         * @member {Object} _chart
+         * @memberof amchart_CommonRadar
+         * @private
+         */
         this._chart = {};
     }
 
@@ -18,9 +41,6 @@
 
     // NO X-Axis  !!!
 
-    /**
-     * Publish Params Common To Other Libraries
-     */
     CommonRadar.prototype.publish("fontSize", null, "number", "Font Size",null,{tags:['Basic','Shared']});
     CommonRadar.prototype.publish("fontFamily", null, "string", "Font Name",null,{tags:['Basic','Shared']});
     CommonRadar.prototype.publish("fontColor", null, "html-color", "Font Color",null,{tags:['Basic','Shared']});
@@ -40,9 +60,6 @@
 
     CommonRadar.prototype.publish("axisLineWidth", 1, "number", "Thickness of axis",null,{tags:['Basic','Shared']});
 
-    /**
-     * Publish Params Unique To This Widget
-     */
     CommonRadar.prototype.publish("marginLeft", null, "number", "Margin (Left)",null,{tags:['Intermediate']});
     CommonRadar.prototype.publish("marginRight", null, "number", "Margin (Right)",null,{tags:['Intermediate']});
     CommonRadar.prototype.publish("marginTop", null, "number", "Margin (Top)",null,{tags:['Intermediate']});
@@ -74,6 +91,14 @@
 
     CommonRadar.prototype.publish("fillOpacity", 0.3, "number", "Shape Opacity", null, {min:0,max:1,step:0.001,inputType:'range',tags:['Intermediate']});
 
+    /**
+     * Updates underlying AmChart widget object, with options from publish parameters.
+     * @method updateChartOptions
+     * @memberof amchart_CommonRadar
+     * @instance
+     * @private
+     * @returns {Object}
+     */
     CommonRadar.prototype.updateChartOptions = function() {
         var context = this;
 
@@ -133,6 +158,16 @@
         return this._chart;
     };
 
+    /**
+     * Builds AmChart graph object that becomes a property of the AmChart widget object.
+     * @method buildGraphObj
+     * @private
+     * @memberof amchart_Candle
+     * @instance
+     * @param {string} gType Value from this._gType.
+     * @param {number} i Graph object index number.
+     * @returns {Widget}
+     */
     CommonRadar.prototype.buildGraphObj = function(gType,i) {
         var context = this;
         var gObj = {};
@@ -152,6 +187,15 @@
         return gObj;
     };
 
+    /**
+     * Formats data passed via data() correctly for AmCharts underlying widget.
+     * @method formatData
+     * @memberof amchart_CommonRadar
+     * @instance
+     * @private
+     * @params {Array} dataArr Data array from data() method.
+     * @returns {Array}
+     */
     CommonRadar.prototype.formatData = function(dataArr){
         var dataObjArr = [];
         var context = this;
@@ -165,6 +209,19 @@
         return dataObjArr;
     };
 
+    /**
+     * Sets the columns for the data being passed into the widget via .data() method.
+     * @method columns
+     * @memberof amchart_CommonRadar
+     * @instance
+     * @public
+     * @param {String[]} _ An array of strings representing the column names for data passed to widget.
+     * @returns {Widget}
+     * @example widget
+     * .columns(["ID", "Year 1", "Year 2"])
+     * .data([ [40, 66, 60], [30, 98, 92]  ])
+     * .render();
+     */
     CommonRadar.prototype.columns = function(colArr) {
         if (!arguments.length) return this._columns;
         var context = this;
@@ -181,6 +238,15 @@
         return retVal;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @protected
+     * @instance
+     * @memberof amchart_CommonRadar
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     CommonRadar.prototype.enter = function(domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
         var initObj = {
@@ -191,6 +257,15 @@
         this._chart = AmCharts.makeChart(domNode, initObj);
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof amchart_CommonRadar
+     * @instance
+     * @protected
+     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     CommonRadar.prototype.update = function(domNode, element) {
         HTMLWidget.prototype.update.apply(this, arguments);
 
