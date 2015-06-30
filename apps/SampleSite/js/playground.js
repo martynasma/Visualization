@@ -94,8 +94,8 @@ function update_chart(el) {
     $('a[href="#chartTab1"]').html(el.html()); // Update Tab Title
 
     /* Doc Section */
-    resetDocVars();  // Reset Vars
-    buildWidgetDocumentation(chartObjPath); // Build Doc and Update
+    //resetDocVars();  // Reset Vars
+    //buildWidgetDocumentation(chartObjPath); // Build Doc and Update
 }
 function getExampleCode(exUrl){
     $.ajax({
