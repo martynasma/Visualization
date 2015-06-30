@@ -2,10 +2,16 @@
     Select A Chart
     <span class="caret"></span>
 </button>
-<!--
-<button class="btn btn-default" type="button" id="showDocButton"  aria-expanded="true">
+<script>
+function openDocsWindow() {
+    var win = window.open("http://rawgit.com/mlzummo/Visualization/JSDOC_2/docs/","_blank");
+    win.focus();
+}
+</script>
+<button class="btn btn-default" type="button" id="showDocBranchButton" onClick="javascript:openDocsWindow();" aria-expanded="true">
     Show Documentation
 </button>
+<!--
 <button class="btn btn-default" type="button" id="exportPNGButton"  aria-expanded="true">
     Export PNG
 </button>
