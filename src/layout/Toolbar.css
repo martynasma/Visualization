@@ -1,0 +1,9 @@
+.layout_Toolbar .toolbar-container {
+/*    position: absolute;*/
+    display:block;
+}
+
+.layout_Toolbar .toolbar-widget {
+    display: inline-block;
+    margin:2px;
+}
