@@ -28,12 +28,18 @@
     Toolbar.prototype.testData = function () {
         this.toolbarAnnotations([
             {
+                width:50,
+                height: 25,
                 widget: new formInput().type("button").value("button 1").label("button 1").name("button1")
             },
             {
+                width:50,
+                height: 25,
                 widget: new formInput().type("button").value("button 2").label("button 2").name("button2")
             },
             {
+                width:25,
+                height: 25,
                widget: new Icon().testData().diameter(20)
                // widget: new Icon().testData().shape("square")
             }
@@ -44,7 +50,7 @@
     Toolbar.prototype.enter = function (domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
         //this._toolbarContainer = element.append("div").attr("class", "toolbar-container");
-        this._toolbarContainer = element;
+        this._toolbarContainer = element.append("div"); //span not working here
     };
 
     Toolbar.prototype.update = function (domNode, element) {
@@ -67,10 +73,10 @@
         widgets.enter().append("div")
             .attr("class", "toolbar-widget")
             .each(function (obj, idx) {
-//                d3.select(this).style("width",obj.width+"px");
-//                d3.select(this).style("height",obj.height+"px");
-                d3.select(this).style("width",50+"px");
-                d3.select(this).style("height",50+"px");
+                d3.select(this).style("width",obj.width+"px");
+                d3.select(this).style("height",obj.height+"px");
+                //d3.select(this).style("width",50+"px");
+                //d3.select(this).style("height",50+"px");
                 var abc = obj.widget.target(this).render();
                 //g_arr.push(abc);
 
