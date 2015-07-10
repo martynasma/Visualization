@@ -17,7 +17,14 @@
     Toolbar.prototype._class += " layout_Toolbar";
 
     Toolbar.prototype.publish("title", "", "string", "Title",null,{tags:['basic']});
-    Toolbar.prototype.publish("gutter", 4, "number", "Gap Between Widgets",null,{tags:['Private']});
+    Toolbar.prototype.publish("gutter", 4, "number", "Border Width",null,{tags:['basic']});
+    //Toolbar.prototype.publish("toolbarWidth", null, "number", "Toolbar Width",null,{tags:['basic']});
+    //Toolbar.prototype.publish("toolbarHeight", null, "number", "Toolbar Height",null,{tags:['basic']});
+    Toolbar.prototype.publish("borderWidth", 1, "number", "Border Width",null,{tags:['basic']});
+    Toolbar.prototype.publish("borderColor", "#000000", "html-color", "Borer Color",null,{tags:['basic']});
+    Toolbar.prototype.publish("borderStyle", "solid", "string", "Toolbar Height",null,{tags:['basic']});
+    Toolbar.prototype.publish("borderRadius", 0, "number", "Border Radius",null,{tags:['basic']});
+    Toolbar.prototype.publish("backgroundColor", null, "html-color", "Background Color",null,{tags:['basic']});
 
     Toolbar.prototype.toolbarAnnotations = function(_){
         if (!arguments.length) { return this._tabAnnotations; }
@@ -28,20 +35,22 @@
     Toolbar.prototype.testData = function () {
         this.toolbarAnnotations([
             {
-                width:50,
+                width:55,
                 height: 25,
+                type: "button",
                 widget: new formInput().type("button").value("button 1").label("button 1").name("button1")
             },
             {
-                width:50,
+                width:55,
                 height: 25,
+                type: "button",
                 widget: new formInput().type("button").value("button 2").label("button 2").name("button2")
             },
             {
                 width:25,
                 height: 25,
-               widget: new Icon().testData().diameter(20)
-               // widget: new Icon().testData().shape("square")
+                type: "icon",
+                widget: new Icon().testData()
             }
         ]);
         return this;
@@ -49,8 +58,7 @@
 
     Toolbar.prototype.enter = function (domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
-        //this._toolbarContainer = element.append("div").attr("class", "toolbar-container");
-        this._toolbarContainer = element.append("div"); //span not working here
+        this._toolbarContainer = element.append("div").attr("class", "toolbar-container");
     };
 
     Toolbar.prototype.update = function (domNode, element) {
@@ -58,41 +66,35 @@
         var context = this;
 
         this._toolbarContainer
-            //.style("width",this.width()+"px")
-            .style("height",25+"px")
-            .style("border-width",1+'px')
-            .style("border-color","#ffa500")
-            .style("border-style","solid")
-            .style("border-radius",0+'px')
-            .style("background-color","#FFFFFF")
+            .style("border-width",this.borderWidth()+"px")
+            .style("border-color",this.borderColor())
+            .style("border-style",this.borderStyle())
+            .style("border-radius",this.borderRadius()+"px")
+            .style("background-color",this.backgroundColor())
         ;
-
 
         var widgets = this._toolbarContainer.selectAll(".toolbar-widget").data(this.toolbarAnnotations());
 
         widgets.enter().append("div")
             .attr("class", "toolbar-widget")
             .each(function (obj, idx) {
-                d3.select(this).style("width",obj.width+"px");
-                d3.select(this).style("height",obj.height+"px");
-                //d3.select(this).style("width",50+"px");
-                //d3.select(this).style("height",50+"px");
-                var abc = obj.widget.target(this).render();
-                //g_arr.push(abc);
-
-
-
-
-
-
-
-
-
-
-                //new Surface().target(this).width(100).height(100).widget(obj.widget).render();
+                if (obj.type !== "button") {
+                    d3.select(this).style("width",obj.width+"px");
+                    d3.select(this).style("height",obj.height+"px");
+                    obj.widget.target(this);
+                }
+                if (obj.type === "button") {
+                    obj.widget.target(this).render(function(widget) {
+                        widget._inputElement.style("display","inline-block");
+                        widget._element.style("width",obj.width+"px");
+                        widget._inputElement.style("height",obj.height+"px");
+                    });
+                }
+                d3.select(this).style("padding-left",(context.gutter()/2)+"px");
+                d3.select(this).style("padding-right",(context.gutter()/2)+"px");
+                this._widgetArr = obj.widget.render();
             })
         ;
-        //this.resize();
     };
 
     Toolbar.prototype.exit = function (domNode, element) {
