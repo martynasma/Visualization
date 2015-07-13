@@ -33,6 +33,7 @@
         },
 
         serializeToObject: function (widget, properties, includeData) {
+            console.log('in serializeToObject');
             var retVal = {
                 __version: 3,
                 __class: widget._class.split(" ").pop(),
@@ -47,6 +48,7 @@
                 });
             } else {
                 this.discover(widget).forEach(function (item) {
+                    //console.log(item)
                     if (widget[item.id + "_modified"]() || typeof(widget["__meta_"+item.id].trueDefaultValue) !== "undefined") {
                         switch (item.type) {
                             case "widget":
@@ -87,6 +89,7 @@
         },
 
         deserialize: function (state, callback) {
+            //console.log('in deserialize');
             var context = this;
             var path = "src/" + state.__class.split("_").join("/");
             require([path], function (Widget) {
@@ -99,7 +102,9 @@
                 }
                 var createCount = 0;
                 for (var key in state.__properties) {
+                    //console.log(key)
                     if (widget["__meta_" + key]) {
+
                         switch (widget["__meta_" + key].type) {
                             case "widget":
                                 ++createCount;
@@ -109,6 +114,7 @@
                                 });
                                 break;
                             case "widgetArray":
+                                console.log('in des:widgetArray')
                                 ++createCount;
                                 var widgetStateArray = state.__properties[key];
                                 var widgetArray = [];
