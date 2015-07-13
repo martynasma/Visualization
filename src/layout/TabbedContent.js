@@ -66,10 +66,6 @@
 
         tabs.enter().append("span").classed("tab-button",true)
             .each(function (tab, idx) {
-                if (document.getElementById(tab.id)) {
-                    d3.select(this).remove();
-                    return false;
-                }
 
                 var el = context._tabButtons[idx] = d3.select(this)
                     .attr("class", "tab-button " + tab.clss)
@@ -94,15 +90,14 @@
             }
         );
 
+        tabs.exit().remove();
+
+
 //        if (!this._contentContainer) {
         var content = this._contentContainer.selectAll(".tab-content").data(this._tabAnnotations);
 //        }
         content.enter().append("div")
             .each(function (tab, idx) {
-                if (document.getElementById(tab.id)) {
-                    d3.select(this).remove();
-                    return false;
-                }
                 var el = context._tabButtons[idx] = d3.select(this)
                     .attr("class", "tab-content tab-content-"+idx)
                     .style("display", "none")
@@ -121,9 +116,10 @@
                 }
                 //context.widgets()[idx].target(this).render();
                 context.widgets()[idx].render();
-
             }
         );
+
+        content.exit().remove();
     };
 
     TabbedContent.prototype.enter = function (domNode, element) {
