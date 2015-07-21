@@ -19,7 +19,11 @@
     vertical-align:middle;
 }
 
-.form_Form tfoot button{
+.form_Form tfoot button {
+    margin:5px;
+}
+
+.form_Form tfoot input[type="submit"] {
     margin:5px;
 }
 
