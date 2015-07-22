@@ -20,6 +20,12 @@
     function SVGWidget() {
         Widget.call(this);
 
+        /**
+         * Specifies the HTML tag type of the container.
+         * @member {string} _tag
+         * @memberof common_SVGWidget
+         * @private
+         */
         this._tag = "g";
 
         this._boundingBox = null;
@@ -176,14 +182,41 @@
         return this;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page.
+     * @method enter
+     * @memberof common_SVGWidget
+     * @instance
+     * @protected
+     * @param {SVGElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     SVGWidget.prototype.enter = function (domeNode, element, d) {
         Widget.prototype.enter.apply(this, arguments);
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * @method update
+     * @memberof common_SVGWidget
+     * @instance
+     * @protected
+     * @param {SVGElement} domeNode HTML/SVG DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     SVGWidget.prototype.update = function (domeNode, element, d) {
         Widget.prototype.update.apply(this, arguments);
     };
 
+    /**
+     * The function that is executed after render. It is used for doing destroying/cleanup.
+     * @method exit
+     * @memberof common_SVGWidget
+     * @instance
+     * @protected
+     * @param {SVGElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     SVGWidget.prototype.exit = function (domeNode, element, d) {
         if (this._parentRelativeDiv) {
             this._parentOverlay.remove();
@@ -193,6 +226,7 @@
         Widget.prototype.exit.apply(this, arguments);
     };
 
+    //TODO: doc
     SVGWidget.prototype.getOffsetPos = function () {
         var retVal = { x: 0, y: 0 };
         if (this._parentWidget) {
@@ -204,6 +238,16 @@
         return retVal;
     };
 
+    /**
+     * TODO
+     * Returns an object with the bounding box of the widget. Upper left corner x and y position and width and height.
+     * @method getBBox
+     * @memberof common_SVGWidget
+     * @instance
+     * @param {Boolean} refresh
+     * @param {Boolean} round
+     * @returns {Object}
+     */
     SVGWidget.prototype.getBBox = function (refresh, round) {
         if (refresh || this._boundingBox === null) {
             var svgNode = this._element.node();
@@ -365,6 +409,20 @@
         return null;
     };
 
+    /**
+     * Returns distance in pixels between two points.
+     * @method distance
+     * @memberof common_SVGWidget
+     * @instance
+     * @param {Object} [pointA] An object with the properties "x" and "y".
+     * @param {Mixed} [pointA.x] End point x coordinate of the line.
+     * @param {Mixed} [pointA.y] End point y coordinate of the line.
+     * @param {Object} [pointB] An object with the properties "x" and "y".
+     * @param {Mixed} [pointB.x] End point x coordinate of the line.
+     * @param {Mixed} [pointB.y] End point y coordinate of hte line.
+     * @returns {Number}
+     * @example //TODO
+     */
     SVGWidget.prototype.distance = function (pointA, pointB) {
         return Math.sqrt((pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y));
     };

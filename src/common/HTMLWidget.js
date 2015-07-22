@@ -130,9 +130,10 @@
     };
 
     /**
-     * Sets the target container of the widget.
+     * Sets or returns the target container of the widget.
      * @method target
      * @memberof common_HTMLWidget
+     * @param [String|HTMLElement|SVGElement] - String ID or Dom Node of container to render widget in.
      * @instance
      * @public
      * @example widget

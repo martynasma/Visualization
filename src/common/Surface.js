@@ -19,21 +19,55 @@
         SVGWidget.call(this);
 
         this._menuPadding = 2;
+        /**
+         * Icon widget object reference used in top lefthand size of titlebar.
+         * @member {Widget} _icon
+         * @memberof common_Surface
+         * @private
+         */
         this._icon = new Icon()
             .faChar("\uf07b")
             .paddingPercent(50)
         ;
+        /**
+         * TODO
+         * Shape widget object reference used to construct Surface container.
+         * @member {Widget} _container
+         * @memberof common_Surface
+         * @private
+         */
         this._container = new Shape()
             .class("container")
             .shape("rect")
         ;
+        /**
+         * TODO
+         * Shape widget object reference used to construct Surface titlebar rectangle/container.
+         * @member {Widget} _titleRect
+         * @memberof common_Surface
+         * @private
+         */
         this._titleRect = new Shape()
             .class("title")
             .shape("rect")
         ;
+        /**
+         * TODO
+         * Text widget object reference used in the title of the titlebar.
+         * @member {Widget} _text
+         * @memberof common_Surface
+         * @private
+         */
         this._text = new Text()
             .class("title")
         ;
+        /**
+         * TODO
+         * Menu widget object reference used in top right handside of titlebar.
+         * @member {Widget} _menu
+         * @memberof common_Surface
+         * @private
+         */
         this._menu = new Menu()
             .paddingPercent(0)
         ;
@@ -51,6 +85,13 @@
 
         this._showContent = true;
         this._content = null;
+        /**
+         * TODO
+         * Array of surface buttons used in titlebar.
+         * @member {Widget} _surfaceButtons
+         * @memberof common_Surface
+         * @private
+         */
         this._surfaceButtons = [];
     }
     Surface.prototype = Object.create(SVGWidget.prototype);
@@ -97,6 +138,15 @@
         return this;
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. Overwrites and calls back SVGWidget.enter()
+     * @method enter
+     * @memberof common_Surface
+     * @instance
+     * @protected
+     * @param {SVGElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Surface.prototype.enter = function (_domNode, _element) {
         SVGWidget.prototype.enter.apply(this, arguments);
         var element = _element.append("g").attr("class", "frame");
@@ -130,6 +180,16 @@
         this.buttonContainer = d3.select(this._target).append("div").attr("class", "svg-button-container");
     };
 
+    /**
+     * The function that is called when this widget "enters" the web page. after enter() and everytime the widget is updated with subsequent render calls.
+     * Overwrites and calls back SVGWidget.update()
+     * @method update
+     * @memberof common_Surface
+     * @instance
+     * @protected
+     * @param {SVGElement} domeNode HTML/SVG DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Surface.prototype.update = function (domNode, element) {
         SVGWidget.prototype.update.apply(this, arguments);
         var context = this;
@@ -278,6 +338,15 @@
         this._menu.element().node().parentNode.appendChild(this._menu.element().node()); // Make sure menu is on top (Z-Order POV)
     };
 
+    /**
+     * The function that is executed after render. It is used for doing destroying/cleanup.
+     * @method exit
+     * @memberof common_Surface
+     * @instance
+     * @protected
+     * @param {SVGElement} domeNode HTML DOMNode of widget container.
+     * @param {D3Selection} element d3 selection object of widget.
+     */
     Surface.prototype.exit = function (domNode, element) {
         if (this.content()) {
             this.content().target(null);
@@ -285,6 +354,25 @@
         SVGWidget.prototype.exit.apply(this, arguments);
     };
 
+    /**
+     * An optional callback function as parameter. The current widget object being operated on is passed to the function. The function will execute ater the widget has completed rendering.
+     * @name Surface~RenderCb
+     * @function
+     * @param {Widget} widget - The rendered widget.
+     * @return undefined
+     */
+
+    /**
+     * Renders widget in target container immediately.
+     * Overwrites and calls back SVGWidget.render()
+     * @method render
+     * @memberof common_Surface
+     * @instance
+     * @param {Surface~RenderCb} [callback] - The callback function that is executed after widget render.
+     * @returns {Widget}
+     * @example <caption>Example usage of render.</caption>
+     * var w = new Widget.target("divID").render(function(widget) { console.log(widget); });
+     */
     Surface.prototype.render = function (callback) {
         if (!this.content()) {
             SVGWidget.prototype.render.apply(this, arguments);

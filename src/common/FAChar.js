@@ -59,7 +59,7 @@
      * @memberof common_FAChar
      * @instance
      * @protected
-     * @param {HTMLElement} domeNode HTML DOMNode of widget container.
+     * @param {HTMLElement|SVGElement} domeNode HTML/SVG DOMNode of widget container.
      * @param {D3Selection} element d3 selection object of widget.
      */
     FAChar.prototype.enter = function (domNode, element) {

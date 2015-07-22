@@ -21,18 +21,40 @@
         this._ease = "cubic-in-out";
     }
 
+    /**
+     * TODO
+     * Duration of the transition in seconds/miliseconds.
+     * @method duration
+     * @memberof common_Transition
+     * @param {Number} _ Value for duration.
+     * @private
+     */
     Transition.prototype.duration = function (_) {
         if (!arguments.length) return this._duration;
         this._duration = _;
         return this._widget;
     };
 
+    /**
+     * TODO
+     * @method {Number|Widget} delay
+     * @memberof common_Transition
+     * @param {Number} _ Value for delay.
+     * @private
+     */
     Transition.prototype.delay = function (_) {
         if (!arguments.length) return this._delay;
         this._delay = _;
         return this._widget;
     };
 
+    /**
+     * TODO
+     * @method {Number|Widget} ease
+     * @memberof common_Transition
+     * @param {String} _ Value for easing method to use.
+     * @private
+     */
     Transition.prototype.ease = function (_) {
         if (!arguments.length) return this._ease;
         this._ease = _;
@@ -41,12 +63,12 @@
 
     /**
      * TODO
-     * @method update
-     * @memberof common_Shape
+     * @method apply
+     * @memberof common_Transition
      * @instance
      * @protected
-     * @param {HTMLElement} domeNode HTML/SVG DOMNode of widget container.
-     * @param {D3Selection} element d3 selection object of widget.
+
+     *
      */
     Transition.prototype.apply = function (selection) {
         if (this._duration || this._delay) {

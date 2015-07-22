@@ -10,7 +10,7 @@
     } else {
         root.chart_Column = factory(root.d3, root.chart_XYAxis, root.api_INDChart);
     }
-}(this, function (d3, XYAxis, I2DChart) {
+}(this, function (d3, XYAxis, INDChart) {
     /**
      * @class chart_Column
      * @extends chart_XYAxis

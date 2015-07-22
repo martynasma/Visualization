@@ -43,7 +43,7 @@
     */
 
     /**
-     * HPCC Visualization Object
+     * HPCC Visualization Widget Object
      * @typedef Widget
      * @type {Object}
     */
@@ -53,6 +53,13 @@
      * @typedef HTMLElement
      * @type {Object}
     */
+
+    /**
+     * SVG DOM Node Object
+     * @typedef SVGEelement
+     * @type {Object}
+    */
+
     function Widget() {
         this._class = Object.getPrototypeOf(this)._class;
         this._id = "_w" + widgetID++;
@@ -61,16 +68,35 @@
         this._data = [];
         this._pos = { x: 0, y: 0 };
         this._size = { width: 0, height: 0 };
+
         this._scale = 1;
 
         this._target = null;
+        /**
+         * Reference to parent element of the current widget.
+         * @member {HTMLElement|SVGElement} _parentElement
+         * @memberof common_Widget
+         * @private
+         */
         this._parentElement = null;
+        /**
+         * (SVG Widgets Only) - contains reference to parent widget.
+         * @member {HTMLElement|SVGElement} _parentElement
+         * @memberof common_Widget
+         * @private
+         */
         this._parentWidget = null;
 
         this._element = d3.select();
 
         this._watchArr = [];
 
+        /**
+         * Variable containing how many times the widget has been rendered.
+         * @member {Number} _renderCount
+         * @memberof common_Widget
+         * @private
+         */
         this._renderCount = 0;
     }
     Widget.prototype._class = " common_Widget";
@@ -160,6 +186,14 @@
         window.MutationObserver = Widget.prototype.MutationObserver;
     }
 
+    /**
+     * Method used to implement a given interface file.
+     * @method implements
+     * @memberof common_Widget
+     * @instance
+     * @param {Object} source A given interface's object prototype.
+     * @example Area.prototype.implements(INDChart.prototype);
+     */
     Widget.prototype.implements = function (source) {
         for (var prop in source) {
             if (this[prop] === undefined && source.hasOwnProperty(prop)) {
@@ -168,7 +202,24 @@
         }
     };
 
-    // Serialization  ---
+    /**
+     * Method used for defining a publish parameter for a widget. Creates a getter/setter function for the widget public "parameter".
+     * @method publish
+     * @memberof common_Widget
+     * @instance
+     * @param {String} id Name of the publish parameter.
+     * @param {Mixed} defaultValue Default value for parameter.
+     * @param {String} type Type of publish parameter. Available options include: [set, html-color, boolean, number, string, array].
+     * @param {String} description Short description string of the parameter.
+     * @param {Array|null} set The available "set" type values that the parameter can accept. Null if not set type parameter.
+     * @param {Object} ext An object containing miscellaneous parameter settings.
+     * @example Icon.prototype.publish("shape", "circle", "set", "Shape Type", ["circle", "square"],{tags:['Private']});
+     * @example Icon.prototype.publish("diameter", 24, "number", "Diameter",null,{tags:['Private']});
+     * @example Column.prototype.publish("isStacked", false, "boolean", "Stack Chart",null,{tags:['Basic','Shared']});
+     * @example Pie.prototype.publish("pieSliceBorderColor", null, "html-color", "The Color of The Slice Borders",null,{tags:['Intermediate']});
+     * @example Pie.prototype.publish("slicesOffset", [], "array", "Per Slice Offset",null,{tags:['Advanced']});
+     * @example Pie.prototype.publish("pieResidueSliceLabel", "Other", "string", "A Label For The combination Slice That Holds All Slices Below SliceVisibilityThreshold",null,{tags:['Advanced']});
+     */
     Widget.prototype.publish = function (id, defaultValue, type, description, set, ext) {
         if (this["__meta_" + id] !== undefined) {
             throw id + " is already published.";
@@ -238,6 +289,16 @@
         this["__prop_" + id] = undefined;
     };
 
+    /**
+     * TODO
+     * @method publishWidget
+     * @memberof common_Widget
+     * @instance
+     * @param {String} prefix Name of the publish parameter.
+     * @param {Object} WidgetType Default value for parameter.
+     * @param {String} id Type of publish parameter. Available options include: [set, html-color, boolean, number, string, array].
+     * @example TODO
+     */
     Widget.prototype.publishWidget = function (prefix, WidgetType, id) {
         for (var key in WidgetType.prototype) {
             if (key.indexOf("__meta") === 0) {
@@ -247,6 +308,18 @@
         }
     };
 
+    /**
+     * TODO
+     * Method used for allowing pass through of consumed widgets publish parameters in another widget.
+     * @method publishProxy
+     * @memberof common_Widget
+     * @instance
+     * @param {String} id Name of the pass through parameter.
+     * @param {Object} proxy the widget object variable name used in the widget.
+     * @param {String} method TODO
+     * @param {Mixed} defaultValue Default value for new proxied parameter.
+     * @example Menu.prototype.publishProxy("faChar", "_icon", null, "\uf0c9");
+     */
     Widget.prototype.publishProxy = function (id, proxy, method, defaultValue) {
         method = method || id;
         if (this["__meta_" + id] !== undefined) {
@@ -347,13 +420,28 @@
         return this;
     };
 
-    //  Implementation  ---
+    /**
+     * Sets or returns the widget ID. Normally "w_[x]" where x is the number id of the widget.
+     * @method id
+     * @memberof common_Widget
+     * @instance
+     * @param [String] _ String ID of widget.
+     * @returns {Widget|String}
+     */
     Widget.prototype.id = function (_) {
         if (!arguments.length) return this._id;
         this._id = _;
         return this;
     };
 
+    /**
+     * Sets or returns the class(es) set on the widgets container
+     * @method class
+     * @memberof common_Widget
+     * @instance
+     * @param [String] _ String class of widget.
+     * @returns {Widget|String}
+     */
     Widget.prototype.class = function (_) {
         if (!arguments.length) return this._class;
         this._class = _;
@@ -365,7 +453,7 @@
      * @method columns
      * @memberof common_Widget
      * @instance
-     * @param {String[]} _ An array of strings representing the column names for data passed to widget.
+     * @param [String[]] _ An array of strings representing the column names for data passed to widget.
      * @returns {Widget}
      * @example widget
      * .columns(["ID", "Year 1", "Year 2"])
@@ -419,6 +507,18 @@
         return retVal;
     };
 
+    /**
+     * Returns and object reprsentation of row data of a widget. This function is normally used to return an object containing the data about what was clicked on a chart/widget.
+     * @method rowToObj
+     * @memberof common_Widget
+     * @instance
+     * @param [Mixed[]] row A row of data from .data() of a widget
+     * @returns {Widget}
+     * @example widget
+     * .columns(["ID", "Year 1", "Year 2"])
+     * .data([ [40, 66, 60], [30, 98, 92]  ])
+     * .render();
+     */
     Widget.prototype.rowToObj = function (row) {
         var retVal = {};
         this._columns.forEach(function(col, idx) {
@@ -430,6 +530,7 @@
         return retVal;
     };
 
+    //TODO: doc
     Widget.prototype.pos = function (_) {
         if (!arguments.length) return this._pos;
         this._pos = _;
@@ -542,6 +643,13 @@
         return this;
     };
 
+    /**
+     * Returns scrollbar width
+     * @method getScrollbarWidth
+     * @memberof common_Widget
+     * @instance
+     * @returns {Number}
+     */
     Widget.prototype._scrollBarWidth = null;
     Widget.prototype.getScrollbarWidth = function () {
         if (Widget.prototype._scrollBarWidth === null) {
@@ -624,6 +732,16 @@
         return this;
     };
 
+    /**
+     * TODO
+     * Returns an object with the position for which the widget should snap to.
+     * @method calcSnap
+     * @memberof common_Widget
+     * @instance
+     * @param {Object} snapSize
+     * @returns {Object}
+     *
+     */
     Widget.prototype.calcSnap = function (snapSize) {
         function snap(x, gridSize) {
             function snapDelta(x, gridSize) {
@@ -691,6 +809,18 @@
         return null;
     };
 
+    /**
+     * TODO
+     * Returns the absolute position of a widget. { x:[x], y:[y] }
+     * @method getAbsolutePos
+     * @memberof common_Widget
+     * @instance
+     * @param {HTMLElement} domNode.
+     * @param {Number} w Width.
+     * @param {Number} h Height.
+     * @returns {Object}
+     *
+     */
     Widget.prototype.getAbsolutePos = function (domNode, w, h) {
         var root = this.locateSVGNode(domNode);
         if (!root) {
@@ -714,6 +844,13 @@
         return retVal;
     };
 
+    /**
+     * Returns widget._overlayElement (used for testing if a widget has an overlay).
+     * @method hasOverlay
+     * @memberof common_Widget
+     * @instance
+     * @returns {HTMLElement}
+     */
     Widget.prototype.hasOverlay = function () {
         return this._overlayElement;
     };

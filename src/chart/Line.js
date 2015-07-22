@@ -9,8 +9,6 @@
     /**
      * @class chart_Line
      * @extends chart_Scatter
-     * @extends api_INDChart
-     * @implements api_INDChart
      */
     function Line(target) {
         Scatter.call(this);

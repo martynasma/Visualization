@@ -210,6 +210,14 @@
         ;
     };
 
+    /**
+     * Sets or returns the date/time formatter string used for formatting dates across and axis.
+     * @method xAxisTypeTimePattern
+     * @public
+     * @memberof chart_XYAxis
+     * @instance
+     * @example TODO
+     */
     var xAxisTypeTimePattern = XYAxis.prototype.xAxisTypeTimePattern;
     XYAxis.prototype.xAxisTypeTimePattern = function (_) {
         var retVal = xAxisTypeTimePattern.apply(this, arguments);
@@ -219,6 +227,14 @@
         return retVal;
     };
 
+    /**
+     * Sets or returns the date/time formatter string used for formatting dates across and axis.
+     * @method yAxisTypeTimePattern
+     * @public
+     * @memberof chart_XYAxis
+     * @instance
+     * @example TODO
+     */
     var yAxisTypeTimePattern = XYAxis.prototype.yAxisTypeTimePattern;
     XYAxis.prototype.yAxisTypeTimePattern = function (_) {
         var retVal = yAxisTypeTimePattern.apply(this, arguments);
@@ -244,6 +260,14 @@
         return SVGWidget.prototype.columns.apply(this, arguments);
     };
 
+    /**
+     * Returns formatted data from the function: "_dateParserData".
+     * @method formatData
+     * @public
+     * @memberof chart_XYAxis
+     * @instance
+     * @example TODO
+     */
     XYAxis.prototype.formatData = function (d) {
         switch (this.xAxisType()) {
             case "time":
@@ -253,6 +277,14 @@
         }
     };
 
+    /**
+     * TODO
+     * @method formatValue
+     * @public
+     * @memberof chart_XYAxis
+     * @instance
+     * @example TODO
+     */
     XYAxis.prototype.formatValue = function (d) {
         if (d instanceof Array) {
             return d.map(function (item) {
@@ -270,6 +302,14 @@
         }
     };
 
+    /**
+     * TODO
+     * @method formattedData
+     * @public
+     * @memberof chart_XYAxis
+     * @instance
+     * @example TODO
+     */
     XYAxis.prototype.formattedData = function () {
         return this.data().map(function (row) {
             return row.map(function (cell, idx) {
@@ -406,6 +446,14 @@
         this.selection(selected);
     }, 250);
 
+    /**
+     * TODO
+     * @method dataPos
+     * @public
+     * @memberof chart_XYAxis
+     * @instance
+     * @example TODO
+     */
     XYAxis.prototype.dataPos = function (label) {
         var retVal = this.dataScale(this.formatData(label));
         if (this.xAxisType() === "ordinal") {
@@ -414,6 +462,14 @@
         return retVal;
     };
 
+    /**
+     * TODO
+     * @method valuePos
+     * @public
+     * @memberof chart_XYAxis
+     * @instance
+     * @example TODO
+     */
     XYAxis.prototype.valuePos = function (value) {
         return this.valueScale(this.formatValue(value));
     };
