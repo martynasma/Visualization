@@ -597,22 +597,25 @@
     }
 
     Visualization.prototype.commsDataLoaded = function () {
+        var context = this;
         for (var ds in this.dashboard.datasources) {
             var nameArr = [];
             for (var name in this.dashboard.datasources[ds].outputs) {
                 nameArr.push(this.dashboard.datasources[ds].id + "_" + name);
             }
+
             if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
                 return false;
             }
-            var context = this;
-            nameArr.forEach(function(item) {
-                console.log('item name:');
-                console.log(item);
-                if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "Array") {
+            var notLoaded = nameArr.filter(function (item) {
+                if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
                     return false;
+                } else {
+                    return true;
                 }
+
             });
+            return notLoaded.length === nameArr.length;
         }
         return true;
     };
