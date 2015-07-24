@@ -571,11 +571,16 @@
                             ;
                         }))
                     ;
-                    widget.renderCallback(function(widget) {
-                        setTimeout(function() {
+                    var timeoutCounter = 0;
+                    var formIntervalHandler = setInterval(function () {
+                        if (timeoutCounter >= 200) {
+                            clearInterval(formIntervalHandler);
+                        }
+                        if (context.dashboard.marshaller.allDashboardsLoaded() && context.commsDataLoaded()) {
+                            clearInterval(formIntervalHandler);
                             widget.submit();
-                        }, 500);
-                    });
+                        }
+                    }, 50);
                 });
                 break;
             default:
