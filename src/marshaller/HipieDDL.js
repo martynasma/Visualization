@@ -1,11 +1,11 @@
 ﻿"use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["../other/Comms", "../common/Widget", "require"], factory);
+        define(["d3", "../other/Comms", "../common/Widget", "require"], factory);
     } else {
-        root.marshaller_HipieDDL = factory(root.other_Comms, root.common_Widget, root.require);
+        root.marshaller_HipieDDL = factory(root.d3, root.other_Comms, root.common_Widget, root.require);
     }
-}(this, function (Comms, Widget, require) {
+}(this, function (d3, Comms, Widget, require) {
     var Vertex = null;
     var Edge = null;
     var exists = function (prop, scope) {
@@ -333,29 +333,62 @@
         var context = this;
         var data = this.getOutput().data;
         if (this.sort) {
-            data.sort(function (l, r) {
-                for (var i = 0; i < context.sort.length; ++i) {
+            //console.log(data);
+            // data.sort(function (l, r) {
+            //     console.log(sortField);
+            //     for (var i = 0; i < context.sort.length; ++i) {
+            //         var sortField = context.sort[i];
+            //         var reverse = false;
+            //         if (sortField.indexOf("-") === 0) {
+            //             sortField = sortField.substring(1);
+            //             reverse = true;
+            //         }
+            //         var lVal = l[sortField];
+            //         if (lVal === undefined) {
+            //             lVal = l[sortField.toLowerCase()];
+            //         }
+            //         var rVal = r[sortField];
+            //         if (rVal === undefined) {
+            //             rVal = r[sortField.toLowerCase()];
+            //         }
+
+            //         if (lVal !== rVal) {
+            //             return reverse ? rVal - lVal : lVal - rVal;
+            //         }
+            //     }
+            //     return 0;
+            // });
+
+
+            data.sort(function(l, r) {
+                 for (var i = 0; i < context.sort.length; ++i) {
                     var sortField = context.sort[i];
                     var reverse = false;
                     if (sortField.indexOf("-") === 0) {
                         sortField = sortField.substring(1);
                         reverse = true;
                     }
-                    var lVal = l[sortField];
-                    if (lVal === undefined) {
-                        lVal = l[sortField.toLowerCase()];
-                    }
-                    var rVal = r[sortField];
-                    if (rVal === undefined) {
-                        rVal = r[sortField.toLowerCase()];
-                    }
-
-                    if (lVal !== rVal) {
-                        return reverse ? rVal - lVal : lVal - rVal;
+                    if (reverse) {
+                        return d3.descending(l[sortField], r[sortField]);
+                    } else {
+                        return d3.ascending(l[sortField], r[sortField]);
                     }
                 }
-                return 0;
             });
+
+
+
+
+
+
+//            data.sort();
+            // data.sort(function(a, b) {
+            //     return d3.ascending(a[k], b[k]);
+            // });
+             // data.sort(function(a, b) {
+             //     return d3.ascending(a['productline'], b['productline']);
+             // });
+
         }
         if (this.reverse) {
             data.reverse();
@@ -607,7 +640,7 @@
             if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
                 return false;
             }
-            var notLoaded = nameArr.filter(function (item) {
+            var loaded = nameArr.filter(function (item) {
                 if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
                     return false;
                 } else {
@@ -615,7 +648,7 @@
                 }
 
             });
-            return notLoaded.length === nameArr.length;
+            return loaded.length === nameArr.length;
         }
         return true;
     };
