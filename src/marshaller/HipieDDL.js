@@ -600,7 +600,7 @@
             if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
                 return false;
             }
-            var notLoaded = nameArr.filter(function (item) {
+            var loaded = nameArr.filter(function (item) {
                 if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
                     return false;
                 } else {
@@ -608,7 +608,7 @@
                 }
 
             });
-            return notLoaded.length === nameArr.length;
+            return loaded.length === nameArr.length;
         }
         return true;
     };
