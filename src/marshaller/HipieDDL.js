@@ -606,7 +606,6 @@
                 } else {
                     return true;
                 }
-
             });
             return loaded.length === nameArr.length;
         }
