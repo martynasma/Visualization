@@ -571,6 +571,7 @@
                             ;
                         }))
                     ;
+
                     var timeoutCounter = 0;
                     var formIntervalHandler = setInterval(function () {
                         if (timeoutCounter >= 200) {
@@ -580,6 +581,7 @@
                             clearInterval(formIntervalHandler);
                             widget.submit();
                         }
+                        timeoutCounter++;
                     }, 50);
                 });
                 break;
@@ -595,10 +597,32 @@
     }
 
     Visualization.prototype.commsDataLoaded = function () {
+
+        //console.log(this.dashboard)
+        //dataSource.outputs.forEach(function (item) {
+        //console.log(this.dashboard.datasources[ds].comms._resultNameCache);
+
         for (var ds in this.dashboard.datasources) {
+            var nameArr = [];
+
+            for (var name in this.dashboard.datasources[ds].outputs) {
+                nameArr.push(this.dashboard.datasources[ds].id + "_" + name);
+            }
+
+
             if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
                 return false;
             }
+
+            var context = this;
+            nameArr.forEach(function(item) {
+//                console.log('xyzzzz');
+//                console.log(context.dashboard.datasources[ds].comms._resultNameCache[item]);
+
+                if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "Array") {
+                    return false;
+                }
+            });
         }
         return true;
     };
