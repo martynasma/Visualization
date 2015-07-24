@@ -594,6 +594,15 @@
         }
     }
 
+    Visualization.prototype.commsDataLoaded = function () {
+        for (var ds in context.dashboard.datasources) {
+            if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     Visualization.prototype.getQualifiedID = function () {
         return this.dashboard.getQualifiedID() + "." + this.id;
     };
