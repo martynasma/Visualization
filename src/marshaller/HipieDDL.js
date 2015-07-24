@@ -1,11 +1,11 @@
 ﻿"use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["../other/Comms", "../common/Widget", "require"], factory);
+        define(["d3", "../other/Comms", "../common/Widget", "require"], factory);
     } else {
-        root.marshaller_HipieDDL = factory(root.other_Comms, root.common_Widget, root.require);
+        root.marshaller_HipieDDL = factory(root.d3, root.other_Comms, root.common_Widget, root.require);
     }
-}(this, function (Comms, Widget, require) {
+}(this, function (d3, Comms, Widget, require) {
     var Vertex = null;
     var Edge = null;
     var exists = function (prop, scope) {
@@ -59,7 +59,7 @@
                 if (val === undefined) {
                     val = item[rhsKey.toLowerCase()];
                 }
-                //  Symposium AVE Hack 
+                //  Symposium AVE Hack
                 if (val === undefined && rhsKey.indexOf("_AVE") === rhsKey.length - 4 && item.base_count !== undefined) {
                     var rhsSum = rhsKey.substring(0, rhsKey.length - 4) + "_SUM";
                     val = item[rhsSum];
@@ -333,25 +333,18 @@
         var context = this;
         var data = this.getOutput().data;
         if (this.sort) {
-            data.sort(function (l, r) {
-                for (var i = 0; i < context.sort.length; ++i) {
+            data.sort(function(l, r) {
+                 for (var i = 0; i < context.sort.length; ++i) {
                     var sortField = context.sort[i];
                     var reverse = false;
                     if (sortField.indexOf("-") === 0) {
                         sortField = sortField.substring(1);
                         reverse = true;
                     }
-                    var lVal = l[sortField];
-                    if (lVal === undefined) {
-                        lVal = l[sortField.toLowerCase()];
-                    }
-                    var rVal = r[sortField];
-                    if (rVal === undefined) {
-                        rVal = r[sortField.toLowerCase()];
-                    }
-
-                    if (lVal !== rVal) {
-                        return reverse ? rVal - lVal : lVal - rVal;
+                    if (reverse) {
+                        return d3.descending(l[sortField], r[sortField]);
+                    } else {
+                        return d3.ascending(l[sortField], r[sortField]);
                     }
                 }
                 return 0;
@@ -480,6 +473,7 @@
         this.dashboard = dashboard;
         this.id = visualization.id;
         this.label = visualization.label;
+        this.default = visualization.default;
         this.title = visualization.title || visualization.id;
         this.type = visualization.type;
         this.icon = visualization.icon || {};
@@ -566,9 +560,22 @@
                                 .name(field.id)
                                 .label((field.properties ? field.properties.label : null) || field.label)
                                 .type("textbox")
+                                .value(field.properties.default ? field.properties.default : "")
                             ;
                         }))
                     ;
+
+                    var timeoutCounter = 0;
+                    var formIntervalHandler = setInterval(function () {
+                        if (timeoutCounter >= 200) {
+                            clearInterval(formIntervalHandler);
+                        }
+                        if (context.dashboard.marshaller.allDashboardsLoaded() && context.commsDataLoaded()) {
+                            clearInterval(formIntervalHandler);
+                            widget.submit();
+                        }
+                        timeoutCounter++;
+                    }, 50);
                 });
                 break;
             default:
@@ -581,6 +588,30 @@
                 break;
         }
     }
+
+    Visualization.prototype.commsDataLoaded = function () {
+        var context = this;
+        for (var ds in this.dashboard.datasources) {
+            var nameArr = [];
+            for (var name in this.dashboard.datasources[ds].outputs) {
+                nameArr.push(this.dashboard.datasources[ds].id + "_" + name);
+            }
+
+            if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
+                return false;
+            }
+            var notLoaded = nameArr.filter(function (item) {
+                if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
+                    return false;
+                } else {
+                    return true;
+                }
+
+            });
+            return notLoaded.length === nameArr.length;
+        }
+        return true;
+    };
 
     Visualization.prototype.getQualifiedID = function () {
         return this.dashboard.getQualifiedID() + "." + this.id;

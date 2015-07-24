@@ -84,8 +84,7 @@
             w.blur(w);
         });
         var context = this;
-        this._inputElement.on("change", function (w) {
-
+        this._inputElement.on("keyup", function (w) {
             switch (context.type()) {
                 case "checkbox":
                     context.value(context._inputElement.property("checked"));
@@ -96,6 +95,20 @@
             }
             w.change(w);
         });
+    };
+
+
+    Input.prototype.getValue = function() {
+        switch (this.type()) {
+            case "checkbox":
+                this.value(this._inputElement.property("checked"));
+                break;
+            default:
+                this.value(this._inputElement.property("value"));
+                break;
+        }
+        this.change(this);
+        return this.value();
     };
 
     Input.prototype.insertSelectOptions = function (optionsArr) {
