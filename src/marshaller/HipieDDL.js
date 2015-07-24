@@ -595,7 +595,7 @@
     }
 
     Visualization.prototype.commsDataLoaded = function () {
-        for (var ds in context.dashboard.datasources) {
+        for (var ds in this.dashboard.datasources) {
             if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
                 return false;
             }
