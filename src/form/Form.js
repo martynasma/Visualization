@@ -189,7 +189,7 @@
 
         var controls = [
             new Input()
-                .type("submit")
+                .type("button")
                 .value("Submit")
 
                 .on("click", function () {
