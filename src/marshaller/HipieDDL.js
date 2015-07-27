@@ -1,11 +1,11 @@
 ﻿"use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "../other/Comms", "../common/Widget", "require"], factory);
+        define(["../other/Comms", "../common/Widget", "require"], factory);
     } else {
-        root.marshaller_HipieDDL = factory(root.d3, root.other_Comms, root.common_Widget, root.require);
+        root.marshaller_HipieDDL = factory(root.other_Comms, root.common_Widget, root.require);
     }
-}(this, function (d3, Comms, Widget, require) {
+}(this, function (Comms, Widget, require) {
     var Vertex = null;
     var Edge = null;
     var exists = function (prop, scope) {
@@ -333,20 +333,62 @@
         var context = this;
         var data = this.getOutput().data;
         if (this.sort) {
-            data.sort(function(l, r) {
-                 for (var i = 0; i < context.sort.length; ++i) {
+
+            // http://www.davekoelle.com/files/alphanum.js
+            // http://stackoverflow.com/questions/2802341/javascript-natural-sort-of-alphanumerical-strings
+
+            var caseSensitive = true;
+            data.sort(function alphanum(a, b) {
+                function chunkify(t) {
+                    var tz = [];
+                    var x = 0, y = -1, n = 0, i, j;
+                    while (i = (j = t.charAt(x++)).charCodeAt(0)) { // jslint: suggestions?
+                        var m = (i === 46 || (i >= 48 && i <= 57)); // jslint: suppose to be == not sure how === will effect algo?
+                        if (m !== n) {
+                            tz[++y] = "";
+                            n = m;
+                        }
+                        tz[y] += j;
+                    }
+                    return tz;
+                }
+                for (var i = 0; i < context.sort.length; ++i) {
                     var sortField = context.sort[i];
                     var reverse = false;
                     if (sortField.indexOf("-") === 0) {
                         sortField = sortField.substring(1);
                         reverse = true;
                     }
+
+                    var aa = chunkify(caseSensitive ? a[sortField] : a[sortField].toLowerCase());
+                    var bb = chunkify(caseSensitive ? b[sortField] : b[sortField].toLowerCase());
+
+                    for (var x = 0; aa[x] && bb[x]; x++) {
+                        if (aa[x] !== bb[x]) {
+                            var c = Number(aa[x]), d = Number(bb[x]);
+                            if (c == aa[x] && d == bb[x]) { // jslint: (has to be == or it doesnt work correctly) suggestions?
+                                if (reverse) {
+                                    return d - c;
+                                } else {
+                                    return c - d;
+                                }
+                            } else {
+                                if (reverse) {
+                                    return (aa[x] < bb[x]) ? 1 : -1;
+                                } else {
+                                    return (aa[x] > bb[x]) ? 1 : -1;
+                                }
+                            }
+                        }
+                    }
+
                     if (reverse) {
-                        return d3.descending(l[sortField], r[sortField]);
+                        return bb.length - aa.length;
                     } else {
-                        return d3.ascending(l[sortField], r[sortField]);
+                        return aa.length - bb.length;
                     }
                 }
+
                 return 0;
             });
         }
@@ -473,7 +515,6 @@
         this.dashboard = dashboard;
         this.id = visualization.id;
         this.label = visualization.label;
-        this.default = visualization.default;
         this.title = visualization.title || visualization.id;
         this.type = visualization.type;
         this.icon = visualization.icon || {};
@@ -560,22 +601,9 @@
                                 .name(field.id)
                                 .label((field.properties ? field.properties.label : null) || field.label)
                                 .type("textbox")
-                                .value(field.properties.default ? field.properties.default : "")
                             ;
                         }))
                     ;
-
-                    var timeoutCounter = 0;
-                    var formIntervalHandler = setInterval(function () {
-                        if (timeoutCounter >= 200) {
-                            clearInterval(formIntervalHandler);
-                        }
-                        if (context.dashboard.marshaller.allDashboardsLoaded() && context.commsDataLoaded() && widget.inputsRendered()) {
-                            clearInterval(formIntervalHandler);
-                            widget.submit();
-                        }
-                        timeoutCounter++;
-                    }, 50);
                 });
                 break;
             default:
@@ -588,29 +616,6 @@
                 break;
         }
     }
-
-    Visualization.prototype.commsDataLoaded = function () {
-        var context = this;
-        for (var ds in this.dashboard.datasources) {
-            var nameArr = [];
-            for (var name in this.dashboard.datasources[ds].outputs) {
-                nameArr.push(this.dashboard.datasources[ds].id + "_" + name);
-            }
-
-            if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
-                return false;
-            }
-            var loaded = nameArr.filter(function (item) {
-                if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
-                    return false;
-                } else {
-                    return true;
-                }
-            });
-            return loaded.length === nameArr.length;
-        }
-        return true;
-    };
 
     Visualization.prototype.getQualifiedID = function () {
         return this.dashboard.getQualifiedID() + "." + this.id;
