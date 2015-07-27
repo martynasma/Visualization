@@ -570,7 +570,7 @@
                         if (timeoutCounter >= 200) {
                             clearInterval(formIntervalHandler);
                         }
-                        if (context.dashboard.marshaller.allDashboardsLoaded() && context.commsDataLoaded()) {
+                        if (context.dashboard.marshaller.allDashboardsLoaded() && context.commsDataLoaded() && widget.inputsRendered()) {
                             clearInterval(formIntervalHandler);
                             widget.submit();
                         }

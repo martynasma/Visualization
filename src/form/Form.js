@@ -251,6 +251,18 @@
         ;
     };
 
+    Form.prototype.inputsRendered = function() {
+        this.inputs().forEach(function(widget) {
+            if (widget._renderCount === 0) {
+                return false
+            }
+            if (typeof(widget._inputElement) === "undefined") {
+                return false;
+            }
+        });
+        return true;
+    }
+
     Form.prototype.exit = function (domNode, element) {
         HTMLWidget.prototype.exit.apply(this, arguments);
     };
