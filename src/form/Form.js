@@ -252,15 +252,16 @@
     };
 
     Form.prototype.inputsRendered = function() {
-        this.inputs().forEach(function(widget) {
+        var loaded = this.inputs().filter(function (widget) {
             if (widget._renderCount === 0) {
                 return false
             }
             if (typeof(widget._inputElement) === "undefined") {
                 return false;
             }
+            return true;
         });
-        return true;
+        return loaded.length === this.inputs().length;
     }
 
     Form.prototype.exit = function (domNode, element) {
