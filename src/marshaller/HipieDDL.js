@@ -601,9 +601,22 @@
                                 .name(field.id)
                                 .label((field.properties ? field.properties.label : null) || field.label)
                                 .type("textbox")
+                                .value(field.properties.default ? field.properties.default : "")
                             ;
                         }))
                     ;
+
+                    var timeoutCounter = 0;
+                    var formIntervalHandler = setInterval(function () {
+                        if (timeoutCounter >= 200) {
+                            clearInterval(formIntervalHandler);
+                        }
+                        if (context.dashboard.marshaller.allDashboardsLoaded() && context.commsDataLoaded() && widget.inputsRendered()) {
+                            clearInterval(formIntervalHandler);
+                            widget.submit();
+                        }
+                        timeoutCounter++;
+                    }, 50);
                 });
                 break;
             default:
@@ -616,6 +629,29 @@
                 break;
         }
     }
+
+    Visualization.prototype.commsDataLoaded = function () {
+        var context = this;
+        for (var ds in this.dashboard.datasources) {
+            var nameArr = [];
+            for (var name in this.dashboard.datasources[ds].outputs) {
+                nameArr.push(this.dashboard.datasources[ds].id + "_" + name);
+            }
+
+            if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
+                return false;
+            }
+            var loaded = nameArr.filter(function (item) {
+                if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            return loaded.length === nameArr.length;
+        }
+        return true;
+    };
 
     Visualization.prototype.getQualifiedID = function () {
         return this.dashboard.getQualifiedID() + "." + this.id;
