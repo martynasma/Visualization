@@ -336,59 +336,61 @@
 
             // http://www.davekoelle.com/files/alphanum.js
             // http://stackoverflow.com/questions/2802341/javascript-natural-sort-of-alphanumerical-strings
+            // https://github.com/tablesort/javascript-natural-sort/blob/master/naturalSort.js
+            // http://www.overset.com/2008/09/01/javascript-natural-sort-algorithm/
 
             var caseSensitive = true;
-            data.sort(function alphanum(a, b) {
-                function chunkify(t) {
-                    var tz = [];
-                    var x = 0, y = -1, n = 0, i, j;
-                    while (i = (j = t.charAt(x++)).charCodeAt(0)) { // jslint: suggestions?
-                        var m = (i === 46 || (i >= 48 && i <= 57)); // jslint: suppose to be == not sure how === will effect algo?
-                        if (m !== n) {
-                            tz[++y] = "";
-                            n = m;
-                        }
-                        tz[y] += j;
-                    }
-                    return tz;
-                }
-                for (var i = 0; i < context.sort.length; ++i) {
-                    var sortField = context.sort[i];
+            data.sort(function (a, b) {
+                var re = /(^([+\-]?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?)?$|^0x[0-9a-f]+$|\d+)/gi,
+                    sre = /(^[ ]*|[ ]*$)/g,
+                    dre = /(^([\w ]+,?[\w ]+)?[\w ]+,?[\w ]+\d+:\d+(:\d+)?[\w ]?|^\d{1,4}[\/\-]\d{1,4}[\/\-]\d{1,4}|^\w+, \w+ \d+, \d{4})/,
+                    hre = /^0x[0-9a-f]+$/i,
+                    ore = /^0/,
+                    i = function(s) { return !caseSensitive && ('' + s).toLowerCase() || '' + s; };
+
+                for (var idx = 0; idx < context.sort.length; ++idx) {
+                    var sortField = context.sort[idx];
                     var reverse = false;
                     if (sortField.indexOf("-") === 0) {
                         sortField = sortField.substring(1);
                         reverse = true;
                     }
+                    console.log(reverse);
+                    // convert all to strings strip whitespace
+                    var x = i(a[sortField]).replace(sre, '') || '',
+                        y = i(b[sortField]).replace(sre, '') || '',
+                        // chunk/tokenize
+                        xN = x.replace(re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0'),
+                        yN = y.replace(re, '\0$1\0').replace(/\0$/,'').replace(/^\0/,'').split('\0'),
+                        // numeric, hex or date detection
+                        xD = parseInt(x.match(hre), 16) || (xN.length !== 1 && x.match(dre) && Date.parse(x)),
+                        yD = parseInt(y.match(hre), 16) || xD && y.match(dre) && Date.parse(y) || null,
+                        oFxNcL, oFyNcL;
+                        console.log(x);
 
-                    var aa = chunkify(caseSensitive ? a[sortField] : a[sortField].toLowerCase());
-                    var bb = chunkify(caseSensitive ? b[sortField] : b[sortField].toLowerCase());
-
-                    for (var x = 0; aa[x] && bb[x]; x++) {
-                        if (aa[x] !== bb[x]) {
-                            var c = Number(aa[x]), d = Number(bb[x]);
-                            if (c == aa[x] && d == bb[x]) { // jslint: (has to be == or it doesnt work correctly) suggestions?
-                                if (reverse) {
-                                    return d - c;
-                                } else {
-                                    return c - d;
-                                }
-                            } else {
-                                if (reverse) {
-                                    return (aa[x] < bb[x]) ? 1 : -1;
-                                } else {
-                                    return (aa[x] > bb[x]) ? 1 : -1;
-                                }
-                            }
-                        }
+                    // first try and sort Hex codes or Dates
+                    if (yD) {
+                        if ( xD < yD ) { return reverse?-1:1; }
+                        else if ( xD > yD ) { return reverse?1:-1; }
                     }
-
-                    if (reverse) {
-                        return bb.length - aa.length;
-                    } else {
-                        return aa.length - bb.length;
+                    // natural sorting through split numeric strings and default strings
+                    for(var cLoc=0, numS=Math.max(xN.length, yN.length); cLoc < numS; cLoc++) {
+                        // find floats not starting with '0', string or 0 if not defined (Clint Priest)
+                        oFxNcL = !(xN[cLoc] || '').match(ore) && parseFloat(xN[cLoc]) || xN[cLoc] || 0;
+                        oFyNcL = !(yN[cLoc] || '').match(ore) && parseFloat(yN[cLoc]) || yN[cLoc] || 0;
+                        // handle numeric vs string comparison - number < string - (Kyle Adams)
+                        if (isNaN(oFxNcL) !== isNaN(oFyNcL)) {
+                            return (isNaN(oFxNcL)) ? 1 : -1;
+                        }
+                        // rely on string comparison if different types - i.e. '02' < 2 != '02' < '2'
+                        else if (typeof oFxNcL !== typeof oFyNcL) {
+                            oFxNcL += '';
+                            oFyNcL += '';
+                        }
+                        if (oFxNcL < oFyNcL) { return reverse?-1:1; }
+                        if (oFxNcL > oFyNcL) { return reverse?1:-1; }
                     }
                 }
-
                 return 0;
             });
         }
