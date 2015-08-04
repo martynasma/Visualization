@@ -57,6 +57,7 @@
             default:
                 this.checkNodeName("INPUT", element);
                 this._inputElement.attr("type", this.type());
+                this._inputElement.attr("tabindex", 1);
                 this._inputElement.property("value", this.value());
                 break;
         }

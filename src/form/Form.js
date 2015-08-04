@@ -165,15 +165,6 @@
         HTMLWidget.prototype.enter.apply(this, arguments);
         var context = this;
 
-        // element.on("keypress", function (f) {
-        //     var evt = window.event;
-        //     var charCode = (evt.charCode) ? evt.charCode : evt.keyCode;
-        //     if (charCode === 13) {
-        //         f.submit();
-        //         d3.event.preventDefault();
-        //     }
-        // });
-
         element.on("submit", function () {
             d3.event.preventDefault();
         });
@@ -189,16 +180,18 @@
 
         var controls = [
             new Input()
+            .type("button")
+            .value("Clear")
+            .on("click", function () {
+                alert('here');
+                context.clear();
+            }, true),
+            new Input()
                 .type("submit")
                 .value("Submit")
+                .name("submit")
                 .on("click", function () {
                     context.submit();
-                }, true),
-            new Input()
-                .type("button")
-                .value("Clear")
-                .on("click", function () {
-                    context.clear();
                 }, true)
         ];
         controls.reverse().forEach(function (w) {
