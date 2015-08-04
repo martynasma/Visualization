@@ -62,7 +62,7 @@
         },
         serializeThemeToObject: function (widget, filter){
             filter = filter || ["surface", "Color", "Font", "palette"];
-            
+
             var propObj = {};
             widgetPropertyWalker(widget, null, function (widget, item) {
                 if (widget[item.id + "_modified"]() || typeof (widget["__meta_" + item.id].trueDefaultValue) !== "undefined") {
@@ -143,7 +143,7 @@
                 callback.call(this);
             }
         },
-        
+
         serializeToObject: function (widget, filter, includeData) {
             var retVal = {
                 __version: 3,
@@ -271,7 +271,7 @@
             var context = this;
             require([path], function (Widget) {
                 var widget = new Widget();
-                if (state.__id && widget.__id.indexOf("_w") !== 0) {
+                if (state.__id && widget._id.indexOf("_w") !== 0) { //changed __ to _
                     widget._id = state.__id;
                 }
                 context.deserializeFromObject(widget, state, callback);

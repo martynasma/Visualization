@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.18/require.min.js"></script>
+        <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script>
+require.config({
+    baseUrl: "../",
+    paths: {
+        "requireLib": "bower_components/requirejs/require",
+        "css": "bower_components/require-css/css",
+        "css-builder": "bower_components/require-css/css-builder",
+        "normalize": "bower_components/require-css/normalize",
+        "async": "bower_components/requirejs-plugins/src/async",
+        "propertyParser": "bower_components/requirejs-plugins/src/propertyParser",
+        "goog": "bower_components/requirejs-plugins/src/goog",
+
+        "d3": "bower_components/d3/d3",
+        "c3": "bower_components/c3/c3",
+        "dagre": "bower_components/dagre/index",
+        "topojson": "bower_components/topojson/topojson",
+        "colorbrewer": "bower_components/colorbrewer/colorbrewer",
+        "d3.layout.cloud": "bower_components/d3-cloud/d3.layout.cloud",
+        "font-awesome": "bower_components/font-awesome/css/font-awesome",
+        "amcharts": "bower_components/amcharts/dist/amcharts/amcharts",
+        "amcharts.funnel": "bower_components/amcharts/dist/amcharts/funnel",
+        "amcharts.gauge": "bower_components/amcharts/dist/amcharts/gauge",
+        "amcharts.pie": "bower_components/amcharts/dist/amcharts/pie",
+        "amcharts.radar": "bower_components/amcharts/dist/amcharts/radar",
+        "amcharts.serial": "bower_components/amcharts/dist/amcharts/serial",
+        "amcharts.xy": "bower_components/amcharts/dist/amcharts/xy",
+        "amcharts.plugins.responsive": "bower_components/amcharts/dist/amcharts/plugins/responsive/responsive",
+
+        "src": "./src"
+    },
+    shim: {
+        "amcharts.funnel": {
+            deps: ["amcharts"],
+            exports: "AmCharts",
+            init: function() {
+                AmCharts.isReady = true;
+            }
+        },
+        "amcharts.gauge": {
+            deps: ["amcharts"],
+            exports: "AmCharts",
+            init: function() {
+                AmCharts.isReady = true;
+            }
+        },
+        "amcharts.pie": {
+            deps: ["amcharts"],
+            exports: "AmCharts",
+            init: function() {
+                AmCharts.isReady = true;
+            }
+        },
+        "amcharts.radar": {
+            deps: ["amcharts"],
+            exports: "AmCharts",
+            init: function() {
+                AmCharts.isReady = true;
+            }
+        },
+        "amcharts.serial": {
+            deps: ["amcharts"],
+            exports: "AmCharts",
+            init: function() {
+                AmCharts.isReady = true;
+            }
+        },
+        "amcharts.xy": {
+            deps: ["amcharts"],
+            exports: "AmCharts",
+            init: function() {
+                AmCharts.isReady = true;
+            }
+        }
+    }
+});
+</script>
+    </head>
+    <body>
+        <script>
+        var g_widget = [];
+
+        var params = {"url":"http://10.173.147.1:8010/WsWorkunits/WUResult.json?Wuid=W20150821-110315&ResultName=zummma01_dash0729axestest1_Comp_Ins004_DDL&SuppressXmlSchema=true","hpccId":"four-way","WsWorkunits":"http://10.173.147.1:8010/WsWorkunits","WsEcl":"http://10.173.147.1:8002/WsEcl","layout":"{\n  \"formText\": null,\n  \"LayoutText\": {\n    \"__version\": 3,\n    \"__class\": \"marshaller_HTML\",\n    \"__id\": \"_w1\",\n    \"__properties\": {\n      \"ddlUrl\": \"http://10.173.147.1:8010/WsWorkunits/WUResult.json?Wuid=W20150821-110315&ResultName=zummma01_dash0729axestest1_Comp_Ins004_DDL&SuppressXmlSchema=true\",\n      \"proxyMappings\": {\n        \"http://10.173.147.1:8010/WsWorkunits/WUResult.json\": \"http://172.23.40.63:9190/DSP/four-way/proxy-WUResult.do\",\n        \"http://10.173.147.1:8010/WsWorkunits/WUInfo.json\": \"http://172.23.40.63:9190/DSP/four-way/proxy-WUInfo.do\",\n        \"http://10.173.147.1:8002/WsEcl/submit/query/\": \"http://172.23.40.63:9190/DSP/four-way/proxy-WsEcl.do\"\n      },\n      \"designMode\": false,\n      \"content\": [\n        {\n          \"__version\": 3,\n          \"__class\": \"layout_Cell\",\n          \"__id\": \"_w6\",\n          \"__properties\": {\n            \"gridRow\": 0,\n            \"gridCol\": 0,\n            \"gridRowSpan\": 1,\n            \"gridColSpan\": 1,\n            \"surfacePadding\": \"null\",\n            \"title\": \"line\",\n            \"widget\": {\n              \"__version\": 3,\n              \"__class\": \"chart_MultiChart\",\n              \"__id\": \"line\",\n              \"__properties\": {\n                \"chartType\": \"GOOGLE_LINE\",\n                \"chart\": {\n                  \"__version\": 3,\n                  \"__class\": \"google_Line\",\n                  \"__id\": \"_w14\",\n                  \"__properties\": {}\n                }\n              }\n            }\n          }\n        }\n      ]\n    }\n  }\n}"};
+
+            var hostUrl = "http://172.23.40.63:9190/DSP/four-way";
+
+            var proxyMappings = $.parseJSON('{"' +  params.WsWorkunits + '/WUResult.json":"' + hostUrl + '/proxy-WUResult.do","' +
+                params.WsWorkunits + '/WUInfo.json":"' + hostUrl + '/proxy-WUInfo.do","' +
+                params.WsEcl + '/submit/query/":"' + hostUrl + '/proxy-WsEcl.do"}');
+
+            require(["src/amchart/Area","src/marshaller/HTML", "src/other/Persist", "src/other/PropertyEditor", "src/form/Form"], function (Widget, HTMLMarshaller, Persist, PropertyEditor, Form)
+                var parsedParams=$.parseJSON(params.layout);
+                console.log(parsedParams.LayoutText);
+                Persist.create(parsedParams.LayoutText, function(persistWidget) {
+
+                    persistWidget.target('marshaller-wrapper')
+                            .ddlUrl(params.url)
+                            .proxyMappings(proxyMappings)
+                            .render(function () {
+                                //$('#'+target+' .z-apply-loading-indicator').remove();
+                                //currWidget[target] = persistWidget;
+                    });
+                 });
+            });
+        </script>
+        <div id="widget-wrapper"></div>
+        <div id="marshaller-wrapper" style="width:800px;height:600px;"></div>
+    </body>
+</html>
