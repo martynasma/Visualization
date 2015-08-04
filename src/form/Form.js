@@ -165,14 +165,14 @@
         HTMLWidget.prototype.enter.apply(this, arguments);
         var context = this;
 
-        element.on("keypress", function (f) {
-            var evt = window.event;
-            var charCode = (evt.charCode) ? evt.charCode : evt.keyCode;
-            if (charCode === 13) {
-                f.submit();
-                d3.event.preventDefault();
-            }
-        });
+        // element.on("keypress", function (f) {
+        //     var evt = window.event;
+        //     var charCode = (evt.charCode) ? evt.charCode : evt.keyCode;
+        //     if (charCode === 13) {
+        //         f.submit();
+        //         d3.event.preventDefault();
+        //     }
+        // });
 
         element.on("submit", function () {
             d3.event.preventDefault();
@@ -189,7 +189,7 @@
 
         var controls = [
             new Input()
-                .type("button")
+                .type("submit")
                 .value("Submit")
                 .on("click", function () {
                     context.submit();

@@ -23,6 +23,10 @@
     margin:5px;
 }
 
+.form_Form tfoot input[type="submit"] {
+    margin:5px;
+}
+
 .form_Form tbody tr:hover {
     background-color:#FAFAFA;
 }
