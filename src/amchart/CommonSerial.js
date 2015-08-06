@@ -178,7 +178,7 @@
 
         gObj.type = gType;
 
-        gObj.title = '';
+        gObj.title = this.columns()[i+1];
         var fieldArr = ['value','open','close','high','low'];
         fieldArr.forEach(function(field){
             if(typeof(context['_'+field+'Field']) !== 'undefined' && typeof(context['_'+field+'Field'][i]) !== 'undefined'){

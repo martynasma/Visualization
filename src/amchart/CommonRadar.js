@@ -74,6 +74,8 @@
 
     CommonRadar.prototype.publish("fillOpacity", 0.3, "number", "Shape Opacity", null, {min:0,max:1,step:0.001,inputType:'range',tags:['Intermediate']});
 
+    CommonRadar.prototype.publish("showLegend", true, "boolean", "Show Chart Legend",null,{tags:['Basic','Shared']});
+
     CommonRadar.prototype.updateChartOptions = function() {
         var context = this;
 
@@ -147,7 +149,7 @@
 
         gObj.type = gType;
 
-        gObj.title = '';
+        gObj.title = this.columns()[i+1];
 
         return gObj;
     };
@@ -187,7 +189,14 @@
         var initObj = {
             theme: "none",
             type: "radar",
-            chartScrollbar: {}
+            chartScrollbar: {},
+            legend: {
+                "enabled": this.showLegend(),
+                "position":"right",
+                "useGraphSettings": true,
+                "autoMargins": true,
+                "labelText": "[[title]]",
+            }
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickGraphItem", function(e) {

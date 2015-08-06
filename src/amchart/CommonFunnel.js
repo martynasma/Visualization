@@ -44,6 +44,9 @@
     CommonFunnel.prototype.publish("Depth3D", 0, "number", "3D Depth (px)",null,{tags:['Basic']});
     CommonFunnel.prototype.publish("Angle3D", 0, "number", "3D Angle (Deg)",null,{tags:['Basic']});
 
+    CommonFunnel.prototype.publish("showLegend", true, "boolean", "Show Chart Legend",null,{tags:['Basic','Shared']});
+
+
     CommonFunnel.prototype.updateChartOptions = function() {
 
         this._chart.startDuration = this.startDuration();
@@ -130,7 +133,13 @@
             type: "funnel",
             autoResize: true,
             autoMargins: true,
-            chartScrollbar: {}
+            chartScrollbar: {},
+            legend: {
+                "enabled": this.showLegend(),
+                "position":"right",
+                "autoMargins": true,
+                "labelText": "[[title]]",
+            }
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickSlice", function(e) {

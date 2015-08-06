@@ -85,6 +85,8 @@
     //CommonXY.prototype.publish("yAxisMinimum", null, "number", "",null,{tags:['Intermediate']});
     CommonXY.prototype.publish("yAxisTitleOffset", null, "number", "",null,{tags:['Intermediate']});
 
+    CommonXY.prototype.publish("showLegend", true, "boolean", "Show Chart Legend",null,{tags:['Basic','Shared']});
+
     CommonXY.prototype.updateChartOptions = function() {
         var context = this;
 
@@ -176,6 +178,8 @@
         gObj.xField = context._columns[1];
         gObj.yField = context._columns[2];
 
+        gObj.title = this.columns()[i+1];
+
         return gObj;
     };
 
@@ -224,6 +228,13 @@
             dataProvider: [{}],
             responsive: {
                 enabled: true
+            },
+            legend: {
+                "enabled": this.showLegend(),
+                "position":"right",
+                //"useGraphSettings": true,
+                "autoMargins": true,
+                "labelText": "[[title]]",
             }
         };
 
