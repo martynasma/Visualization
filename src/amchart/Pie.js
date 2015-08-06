@@ -46,6 +46,8 @@
 
     Pie.prototype.publish("labelPosition", "right", "set", "Label Position", ["left","right"],{tags:['Intermediate']});
 
+    Pie.prototype.publish("showLegend", true, "boolean", "Show Chart Legend",null,{tags:['Basic','Shared']});
+
     Pie.prototype.updateChartOptions = function() {
         var context = this;
 
@@ -131,7 +133,14 @@
         var context = this;
         var initObj = {
             type: "pie",
-            theme: "none"
+            theme: "none",
+            legend: {
+                "enabled": this.showLegend(),
+                "position":"right",
+                //"useGraphSettings": true,
+                "autoMargins": true,
+                "labelText": "[[title]]",
+            }
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickSlice", function(e) {
