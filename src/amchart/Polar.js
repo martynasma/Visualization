@@ -24,7 +24,7 @@
     /**
      * Publish Params Unique To This Widget
      */
-    Polar.prototype.publish("tooltipTemplate","[[category]]([[title]]): [[value]]", "string", "Tooltip Text",null,{tags:['Intermediate']});
+    Polar.prototype.publish("tooltipTemplate","[[category]]: [[title]]: [[value]]", "string", "Tooltip Text",null,{tags:['Intermediate']});
 
     Polar.prototype.testData = function() {
         this.columns(["Subject", "Year 1", "Year 2", "Year 3", "Year 4"]);

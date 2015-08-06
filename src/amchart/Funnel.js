@@ -25,7 +25,7 @@
     Funnel.prototype.publish("neckWidthPercent", 40, "number", "Neck Width %",null,{tags:['Basic']});
 
     //TODO
-    Funnel.prototype.publish("tooltipTemplate","[[category]]([[title]]): [[value]]", "string", "Tooltip Text",null,{tags:['Basic']});
+    Funnel.prototype.publish("tooltipTemplate","[[category]]: [[title]]: [[value]]", "string", "Tooltip Text",null,{tags:['Basic']});
 
     Funnel.prototype.enter = function(domNode, element) {
         CommonFunnel.prototype.enter.apply(this, arguments);

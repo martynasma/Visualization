@@ -96,6 +96,8 @@
     CommonSerial.prototype.publish("useImgPatterns", false, "boolean", "Enable Image Pattern backgrounds",null,{tags:['Private']});
     CommonSerial.prototype.publish("imgPatternArr", '["../ampatterns/black/pattern2.png"]', "string", "Background Pattern Images (Not used if '[]')",null,{inputType:'textarea',tags:['Private']});
 
+    CommonSerial.prototype.publish("showLegend", true, "boolean", "Show Chart Legend",null,{tags:['Basic','Shared']});
+
     CommonSerial.prototype.updateChartOptions = function() {
 
         this._chart.dataDateFormat = this.dataDateFormat();
@@ -236,6 +238,13 @@
         var initObj = {
             type: "serial",
             chartScrollbar: {},
+            legend: {
+                "enabled": this.showLegend(),
+                "position":"right",
+                "useGraphSettings": true,
+                "autoMargins": true,
+                "labelText": "[[title]]",
+            }
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickGraphItem", function(e) {
