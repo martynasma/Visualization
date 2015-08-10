@@ -1,8 +1,8 @@
 "use strict";
-define(["require"], function (require) {
+define(["src/common/Utility"], function (Utility) {
     describe("util", function () {
 
-        var path = "src/common/Utility"
+        var path = "src/common/Utility";
 
         it("util-naturalSort-test", function (done) {
             require([path], function (Util) {
@@ -20,9 +20,6 @@ define(["require"], function (require) {
 
                 var sortedListD = Util.naturalSort(list,"descending",null,true);
                 var expectedListD = [456, "222", 123, "111", "c", "b", "a", "CD456", "AB123", "AB", "AA"];
-
-                assert.isObject(Util);
-                assert.isFunction(Util.naturalSort, "naturalSort");
 
                 assert.deepEqual(sortedListA,expectedListA);
                 assert.deepEqual(sortedListB,expectedListB);
