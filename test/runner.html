@@ -88,7 +88,10 @@
             { path: "src/amchart/Pyramid" },
             { path: "src/amchart/Scatter" }
         ]
-        require(["./widgets"], function () {
+        // require(["./widgets"], function () {
+        //     mocha.run();
+        // });
+        require(["./Util"], function () {
             mocha.run();
         });
     </script>
