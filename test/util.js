@@ -4,8 +4,8 @@ define(["src/common/Utility"], function (Utility) {
 
         var path = "src/common/Utility";
 
-        it("util-naturalSort-test", function (done) {
-            require([path], function (Util) {
+        require([path], function (Util) {
+            it("util-naturalSort-test", function (done) {
 
                 var list = ["a","b","c","AA","AB","AB123","CD456",123,456,"111","222"];
 
