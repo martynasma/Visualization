@@ -229,7 +229,7 @@
             responsive: {
                 enabled: true
             },
-            pathToImages: "./"
+            pathToImages: "./images/"
         };
 
         this._chart = AmCharts.makeChart(domNode, initObj);
