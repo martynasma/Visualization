@@ -228,7 +228,8 @@
             dataProvider: [{}],
             responsive: {
                 enabled: true
-            }
+            },
+            pathToImages: "./"
         };
 
         this._chart = AmCharts.makeChart(domNode, initObj);
