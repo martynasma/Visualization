@@ -734,7 +734,7 @@ if (typeof define === "function" && define.amd) {
             responsive: {
                 enabled: true
             },
-            //pathToImages: "./imgXXX/"
+            pathToImages: (typeof define === "function" && define.amd) ? require.toUrl("amchartsImg") : "../dist/img/amcharts"
         };
 
         this._chart = AmCharts.makeChart(domNode, initObj);
