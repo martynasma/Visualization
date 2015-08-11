@@ -174,7 +174,7 @@ gulp.task("build-amd-src", function (done) {
     optimize(opts, done);
 });
 
-gulp.task("build-amd", ["build-amd-src"], function (done) {
+gulp.task("build-amd", ["build-amd-src","copy-amchart-images"], function (done) {
     var requireConfig = {
         bundles: amd_bundles
     };
@@ -239,7 +239,7 @@ gulp.task("tag-release", ["tag"], function (cb) {
     git.push(target, 'v' + version, cb);
 });
 
-gulp.task('copy-amchart-images', function() {
-   gulp.src('./bower_components/amcharts/dist/amcharts/**/*.*')
+gulp.task("copy-amchart-images", function() {
+   gulp.src("./bower_components/amcharts/dist/amcharts/images/**/*.*")
    .pipe(gulp.dest(cfg.dist + "/" + "img/amcharts"));
 });

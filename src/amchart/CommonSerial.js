@@ -239,7 +239,7 @@
         var initObj = {
             type: "serial",
             chartScrollbar: {},
-            pathToImages: (typeof define === "function" && define.amd) ? require.toUrl("amchartsImg") : "../dist/img/amcharts/"
+            pathToImages: (typeof define === "function" && define.amd) ? require.toUrl("amchartsImg") : ""
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickGraphItem", function(e) {
