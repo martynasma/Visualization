@@ -148,7 +148,8 @@
             theme: "none",
             type: "gauge",
             axes: [{}],
-            arrows:[{}]
+            arrows:[{}],
+            pathToImages: (typeof define === "function" && define.amd) ? require.toUrl("amchartsImg") : "../dist/img/amcharts/"
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
     };

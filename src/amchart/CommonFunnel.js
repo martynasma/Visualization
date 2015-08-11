@@ -133,7 +133,8 @@
             type: "funnel",
             autoResize: true,
             autoMargins: true,
-            chartScrollbar: {}
+            chartScrollbar: {},
+            pathToImages: (typeof define === "function" && define.amd) ? require.toUrl("amchartsImg") : "../dist/img/amcharts/"
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickSlice", function(e) {

@@ -189,7 +189,8 @@
         var initObj = {
             theme: "none",
             type: "radar",
-            chartScrollbar: {}
+            chartScrollbar: {},
+            pathToImages: (typeof define === "function" && define.amd) ? require.toUrl("amchartsImg") : "../dist/img/amcharts/"
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickGraphItem", function(e) {
