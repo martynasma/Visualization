@@ -239,6 +239,7 @@
         var initObj = {
             type: "serial",
             chartScrollbar: {},
+            pathToImages: "./"
         };
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickGraphItem", function(e) {
