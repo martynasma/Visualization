@@ -238,3 +238,8 @@ gulp.task("tag-release", ["tag"], function (cb) {
     var target = argv.upstream ? "upstream" : "origin"
     git.push(target, 'v' + version, cb);
 });
+
+gulp.task('copy-amchart-images', function() {
+   gulp.src('./bower_components/amcharts/dist/amcharts/**/*.*')
+   .pipe(gulp.dest(cfg.dist + "/" + "img/amcharts"));
+});
