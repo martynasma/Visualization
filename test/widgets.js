@@ -63,7 +63,6 @@ define(["d3", "require"], function (d3, require) {
             { path: "src/google/TreeMap" },
             { path: "src/amchart/Area" },
             { path: "src/amchart/Bar" },
-            { path: "src/amchart/Bubble" },
             { path: "src/amchart/Candle" },
             { path: "src/amchart/FloatingColumn" },
             { path: "src/amchart/Funnel" },
