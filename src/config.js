@@ -25,7 +25,7 @@ require.config({
         "amcharts.xy": "../bower_components/amcharts/dist/amcharts/xy",
         "amcharts.plugins.responsive": "../bower_components/amcharts/dist/amcharts/plugins/responsive/responsive",
 
-        "amchartsImg": "../bower_components/amcharts/dist/amcharts/images",
+        "amchartsImg": "../bower_components/amcharts/dist/amcharts/images/",
 
         "src": "../src"
     },
