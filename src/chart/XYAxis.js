@@ -206,7 +206,7 @@
             return d.map(function (item) {
                 return this.formatValue(item);
             }, this);
-        } 
+        }
         switch (this.yAxisType()) {
             case "time":
                 return this._dateParserValue(d);
@@ -219,6 +219,7 @@
     };
 
     XYAxis.prototype.formattedData = function () {
+        console.log(this.data());
         return this.data().map(function (row) {
             return row.map(function (cell, idx) {
                 if (idx === 0) {
