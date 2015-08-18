@@ -1,3 +1,6 @@
+
+//http://stackoverflow.com/questions/22209619/amchart-x-axis-data-date-formatting-to-display-per-day-values-with-hours-minutes
+
 "use strict";
 (function(root, factory) {
     if (typeof define === "function" && define.amd) {
@@ -15,6 +18,9 @@
 
         this._dateParserData = d3.time.format("%Y-%m-%d").parse;
         this._dateParserValue = d3.time.format("%Y-%m-%d").parse;
+
+        this.dataScale = d3.time.scale();
+
     }
     CommonSerial.prototype = Object.create(HTMLWidget.prototype);
     CommonSerial.prototype.constructor = CommonSerial;
@@ -99,6 +105,9 @@
     CommonSerial.prototype.publish("xAxisTypeTimePattern", "%Y-%m-%d", "string", "Time Series Pattern");
     CommonSerial.prototype.publish("yAxisTypeTimePattern", "%Y-%m-%d", "string", "Time Series Pattern");
 
+    CommonSerial.prototype.publish("yAxisType", "linear", "set", "Y-Axis Type", ["none", "linear", "pow", "log", "time"]);
+    CommonSerial.prototype.publish("xAxisType", "time", "set", "Y-Axis Type", ["none", "linear", "pow", "log", "time"]);
+
 
     var xAxisTypeTimePattern = CommonSerial.prototype.xAxisTypeTimePattern;
     CommonSerial.prototype.xAxisTypeTimePattern = function (_) {
@@ -148,14 +157,67 @@
         ;
     };
 
+
+    CommonSerial.prototype.formatData_X = function (d) {
+        return this._dateParserData(d);
+        switch (this.xAxisType()) {
+            case "time":
+                return this._dateParserData(d);
+            default:
+                return d;
+        }
+    };
+
+    CommonSerial.prototype.formatValue = function (d) {
+        if (!d) {
+            return d;
+        }
+        if (d instanceof Array) {
+            return d.map(function (item) {
+                return this.formatValue(item);
+            }, this);
+        }
+        switch (this.yAxisType()) {
+            case "time":
+                return this._dateParserValue(d);
+            default:
+                if (typeof d === "string") {
+                    return +d;
+                }
+                return d;
+        }
+    };
+
+    CommonSerial.prototype.formattedData = function () {
+        var xyz =  this.data().map(function (row) {
+            return row.map(function (cell, idx) {
+                if (idx === 0) {
+                    return this.formatData_X(cell);
+                } if (idx >= this._columns.length) {
+                    return cell;
+                }
+                return this.formatValue(cell);
+            }, this);
+        }, this);
+        //console.log(xyz);
+        return xyz;
+    };
+
+
+
+
     CommonSerial.prototype.testData = function () {
         this.testDataTimeX()
         return this;
     };
 
-    CommonSerial.prototype.updateChartOptions = function() {
 
-        this._chart.dataDateFormat = this.dataDateFormat();
+
+
+
+    CommonSerial.prototype.updateChartOptions = function() {
+        var context = this;
+        this._chart.dataDateFormat = this.dataDateFormat(); //TODO look into this more
         this._chart.type = "serial";
         this._chart.startDuration = this.startDuration();
         this._chart.rotate = this.orientation() === "vertical"; // this messes up the hover over things
@@ -185,7 +247,15 @@
         this._chart.categoryAxis.titleColor = this.xAxisTitleFontColor();
         this._chart.categoryAxis.titleFontSize = this.xAxisTitleFontSize();
 
-        //this._chart.categoryAxis.parseDates = true; //TODO
+        this._chart.categoryAxis.labelFunction = function(d) {
+            //console.log(d)
+            var abc = context.dataScale(context.formatData_X(d));
+            console.log(abc)
+            return d;
+            //return abc;
+        }
+
+        this._chart.categoryAxis.parseDates = true; //TODO
         //this._chart.categoryAxis.dateFormats = ''; // TODO
 
         this._chart.titles = [];
@@ -196,6 +266,8 @@
         if (this.marginBottom()) { this._chart.marginBottom = this.marginBottom(); }
 
         this._chart.dataProvider = this.formatData(this._data);
+        //this._chart.dataProvider = this.formattedData(this._data);
+
 
         this._chart.valueAxes[0].title = this.yAxisTitle();
         this._chart.valueAxes[0].titleColor = this.yAxisTitleFontColor();
@@ -270,10 +342,18 @@
         dataArr.forEach(function(dataRow) {
             var dataObj = {};
             context._columns.forEach(function(colName, cIdx) {
-                dataObj[colName] = dataRow[cIdx];
+                //dataObj[colName] = context.formattedData(dataRow[cIdx]);
+                //dataObj[colName] = context.formatData_X(dataRow[cIdx]);
+                //dataObj[colName] = dataRow[cIdx];
+                if (cIdx === 0) {
+                    dataObj[colName] = context._dateParserData(dataRow[cIdx]);
+                } else {
+                    dataObj[colName] = dataRow[cIdx];
+                }
             });
             dataObjArr.push(dataObj);
         });
+        console.log(dataObjArr);
         return dataObjArr;
     };
 
@@ -299,7 +379,6 @@
         var initObj = {
             type: "serial",
             chartScrollbar: {},
-            //dataDateFormat: "YYYY-MM-DD", //TODO ... look into converting to date object before passing to amcharts
         };
         if (typeof define === "function" && define.amd) {
             initObj.pathToImages = require.toUrl("amchartsImg");
