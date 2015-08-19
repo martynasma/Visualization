@@ -1,5 +1,11 @@
 
 //http://stackoverflow.com/questions/22209619/amchart-x-axis-data-date-formatting-to-display-per-day-values-with-hours-minutes
+//http://www.amcharts.com/demos/date-based-data/
+
+
+//http://www.amcharts.com/tutorials/time-series-chart-the-great-advantages-of-parsing-dates/
+// http://www.amcharts.com/tutorials/updating-balloon-tool-tip-text-fly/
+
 
 "use strict";
 (function(root, factory) {
@@ -19,7 +25,7 @@
         this._dateParserData = d3.time.format("%Y-%m-%d").parse;
         this._dateParserValue = d3.time.format("%Y-%m-%d").parse;
 
-        this.dataScale = d3.time.scale();
+        //this.dataScale = d3.time.scale();
 
     }
     CommonSerial.prototype = Object.create(HTMLWidget.prototype);
@@ -72,6 +78,7 @@
     CommonSerial.prototype.publish("bulletType", "none", "set", "Bullet Type", ["none", "round", "square", "triangleUp", "triangleDown", "triangleLeft", "triangleRight", "bubble", "diamond"],{tags:["Basic"]});
 
     CommonSerial.prototype.publish("dataDateFormat", null, "string", "",null,{tags:["Private"]});
+    CommonSerial.prototype.publish("balloonDateFormat", "MMM DD, YYYY HH mm ss" , "string", "",null,{tags:["Private"]});
 
     CommonSerial.prototype.publish("xAxisAutoGridCount", true, "boolean", "Specifies Whether Number of GridCount Is Specified Automatically, According To The Axis Size",null,{tags:["Advanced"]});
     CommonSerial.prototype.publish("xAxisGridPosition", "middle", "set", "Specifies If A Grid Line Is Placed On The Center of A Cell or On The Beginning of A Cell", ["start","middle"],{tags:["Advanced"]});
@@ -106,8 +113,9 @@
     CommonSerial.prototype.publish("yAxisTypeTimePattern", "%Y-%m-%d", "string", "Time Series Pattern");
 
     CommonSerial.prototype.publish("yAxisType", "linear", "set", "Y-Axis Type", ["none", "linear", "pow", "log", "time"]);
-    CommonSerial.prototype.publish("xAxisType", "time", "set", "Y-Axis Type", ["none", "linear", "pow", "log", "time"]);
+    CommonSerial.prototype.publish("xAxisType", "ordinal", "set", "X-Axis Type", ["ordinal", "linear", "time"]);
 
+    CommonSerial.prototype.publish("yAxisTickFormat", "s", "string", "Y-Axis Tick Format");
 
     var xAxisTypeTimePattern = CommonSerial.prototype.xAxisTypeTimePattern;
     CommonSerial.prototype.xAxisTypeTimePattern = function (_) {
@@ -140,9 +148,9 @@
             return 0;
         });
         return this
-            //.xAxisType("time")
+            .xAxisType("time")
             .xAxisTypeTimePattern("%Y-%m-%dT%H:%M:%S")
-            //.yAxisType("linear")
+            .yAxisType("linear")
             .columns(["Date", "Price1", "Price2", "Price3"])
             .data(rawData.map(function (row, idx) {
                 switch (idx % 3) {
@@ -158,8 +166,7 @@
     };
 
 
-    CommonSerial.prototype.formatData_X = function (d) {
-        return this._dateParserData(d);
+    CommonSerial.prototype.formatData = function (d) {
         switch (this.xAxisType()) {
             case "time":
                 return this._dateParserData(d);
@@ -189,18 +196,16 @@
     };
 
     CommonSerial.prototype.formattedData = function () {
-        var xyz =  this.data().map(function (row) {
+        return this.data().map(function (row) {
             return row.map(function (cell, idx) {
                 if (idx === 0) {
-                    return this.formatData_X(cell);
+                    return this.formatData(cell);
                 } if (idx >= this._columns.length) {
                     return cell;
                 }
                 return this.formatValue(cell);
             }, this);
         }, this);
-        //console.log(xyz);
-        return xyz;
     };
 
 
@@ -217,7 +222,9 @@
 
     CommonSerial.prototype.updateChartOptions = function() {
         var context = this;
-        this._chart.dataDateFormat = this.dataDateFormat(); //TODO look into this more
+        //this._chart.dataDateFormat = this.dataDateFormat(); //TODO look into this more
+        //this._chart.balloonDateFormat = this.balloonDateFormat();
+
         this._chart.type = "serial";
         this._chart.startDuration = this.startDuration();
         this._chart.rotate = this.orientation() === "vertical"; // this messes up the hover over things
@@ -247,15 +254,17 @@
         this._chart.categoryAxis.titleColor = this.xAxisTitleFontColor();
         this._chart.categoryAxis.titleFontSize = this.xAxisTitleFontSize();
 
-        this._chart.categoryAxis.labelFunction = function(d) {
-            //console.log(d)
-            var abc = context.dataScale(context.formatData_X(d));
-            console.log(abc)
-            return d;
-            //return abc;
-        }
+        // this._chart.categoryAxis.labelFunction = function(d) {
+        //     console.log(d)
+        //     var abc = context.dataScale(context.formatData_X(d));
+        //     console.log(abc)
+        //     return d;
+        //     //return abc;
+        // }
 
         this._chart.categoryAxis.parseDates = true; //TODO
+        //this._chart.categoryAxis.minPeriod = "hh";
+
         //this._chart.categoryAxis.dateFormats = ''; // TODO
 
         this._chart.titles = [];
@@ -265,7 +274,7 @@
         if (this.marginTop()) { this._chart.marginTop = this.marginTop(); }
         if (this.marginBottom()) { this._chart.marginBottom = this.marginBottom(); }
 
-        this._chart.dataProvider = this.formatData(this._data);
+        this._chart.dataProvider = this.amFormatData(this._data);
         //this._chart.dataProvider = this.formattedData(this._data);
 
 
@@ -285,6 +294,15 @@
         this._chart.valueAxes[0].boldPeriodBeginning = this.yAxisBoldPeriodBeginning();
         this._chart.valueAxes[0].axisTitleOffset = this.yAxisTitleOffset();
 
+        this._chart.valueAxes[0].labelFunction = function(d) {
+            //console.log(d)
+            //var abc = context.dataScale(context.formatData_X(d));
+            //console.log(abc)
+            return d;
+            //return abc;
+        }
+
+
         //this._chart.valueAxes[0].parseDates = true; //TODO
         //this._chart.valueAxes[0].dateFormats = ''; // TODO
 
@@ -301,7 +319,13 @@
         var context = this;
         var gObj = {};
 
-        gObj.balloonText = context.tooltipTemplate();
+        //gObj.balloonText = context.tooltipTemplate();
+        gObj.balloonFunction = function(d) {
+            console.log(d);
+            //console.log(d.category);
+
+            return "bob";
+        }
         gObj.lineAlpha = context.lineOpacity();
         gObj.lineColor = context.lineColor();
         gObj.lineThickness = context.lineWidth();
@@ -336,7 +360,7 @@
         return gObj;
     };
 
-    CommonSerial.prototype.formatData = function(dataArr) {
+    CommonSerial.prototype.amFormatData = function(dataArr) {
         var dataObjArr = [];
         var context = this;
         dataArr.forEach(function(dataRow) {
@@ -346,14 +370,16 @@
                 //dataObj[colName] = context.formatData_X(dataRow[cIdx]);
                 //dataObj[colName] = dataRow[cIdx];
                 if (cIdx === 0) {
-                    dataObj[colName] = context._dateParserData(dataRow[cIdx]);
+                    //console.log(context._dateParserData(dataRow[cIdx]))
+                    dataObj[colName] = context._dateParserData(dataRow[cIdx]); // need disticntion between X and Y Vals ?? and do i need to create a date object?
+
                 } else {
                     dataObj[colName] = dataRow[cIdx];
                 }
             });
             dataObjArr.push(dataObj);
         });
-        console.log(dataObjArr);
+        //console.log(dataObjArr);
         return dataObjArr;
     };
 
@@ -379,6 +405,14 @@
         var initObj = {
             type: "serial",
             chartScrollbar: {},
+            // chartCursor: {
+            //     oneBalloonOnly: false,
+            //     categoryBalloonFunction: function(d) {
+            //         console.log(d);
+            //         return d;
+            //     },
+            //     categoryBalloonEnabled: true
+            // }
         };
         if (typeof define === "function" && define.amd) {
             initObj.pathToImages = require.toUrl("amchartsImg");

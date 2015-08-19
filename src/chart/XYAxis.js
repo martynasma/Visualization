@@ -12,6 +12,8 @@
 
         this._dateParserData = d3.time.format("%Y-%m-%d").parse;
         this._dateParserValue = d3.time.format("%Y-%m-%d").parse;
+
+        this.test = [];
     }
     XYAxis.prototype = Object.create(SVGWidget.prototype);
     XYAxis.prototype.constructor = XYAxis;
@@ -219,7 +221,6 @@
     };
 
     XYAxis.prototype.formattedData = function () {
-        console.log(this.data());
         return this.data().map(function (row) {
             return row.map(function (cell, idx) {
                 if (idx === 0) {
