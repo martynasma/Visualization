@@ -122,6 +122,9 @@
         if (this.validate()) {
             isValid = this.checkValidation();
         }
+        console.log('form values');
+        console.log(this.values());
+        console.log('end');
         this.click(isValid ? this.values() : null);
     };
 

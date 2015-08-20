@@ -126,5 +126,18 @@
         }
     };
 
+    Input.prototype.getValue = function() {
+        switch (this.type()) {
+            case "checkbox":
+                this.value(this._inputElement.property("checked"));
+                break;
+            default:
+                this.value(this._inputElement.property("value"));
+                break;
+        }
+        //this.change(this); // add code to make sure value has changed?
+        return this.value();
+    };
+
     return Input;
 }));

@@ -583,6 +583,29 @@
         }
     }
 
+    Visualization.prototype.commsDataLoaded = function () {
+        var context = this;
+        for (var ds in this.dashboard.datasources) {
+            var nameArr = [];
+            for (var name in this.dashboard.datasources[ds].outputs) {
+                nameArr.push(this.dashboard.datasources[ds].id + "_" + name);
+            }
+
+            if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
+                return false;
+            }
+            var loaded = nameArr.filter(function (item) {
+                if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            return loaded.length === nameArr.length;
+        }
+        return true;
+    };
+
     Visualization.prototype.getQualifiedID = function () {
         return this.dashboard.getQualifiedID() + "." + this.id;
     };
@@ -764,6 +787,7 @@
     };
 
     DataSource.prototype.fetchData = function (request, refresh, updates) {
+        this.isLoaded = false;
         if (!updates) {
             updates = [];
             for (var oKey in this.outputs) {
@@ -787,6 +811,7 @@
         }
         this.comms.call(this.request, function (response) {
             context.processResponse(response, request, updates);
+            context.isLoaded = true;
         });
     };
 
@@ -880,6 +905,71 @@
         this._proxyMappings = {};
     }
 
+    Marshaller.prototype.commsDataLoaded_OLD = function () {
+        var context = this;
+        var ret = [];
+        for (var i = 0; i < this.dashboardArray.length; i++) {
+            var dashboard = this.dashboardArray[i];
+            for (var ds in dashboard.datasources) {
+                console.log('is it loaded:');
+                console.log(dashboard.datasources[ds].isLoaded);
+                var nameArr = [];
+                for (var name in dashboard.datasources[ds].outputs) {
+                    nameArr.push(dashboard.datasources[ds].id + "_" + name);
+                }
+
+                if (dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
+                    ret[i] = false;
+                }
+                var loaded = nameArr.filter(function (item) {
+                    if (typeof(dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
+                        return false;
+                    } else {
+                        console.log('hereX7')
+                        return true;
+                    }
+                });
+                ret[i] = loaded.length === nameArr.length;
+            }
+            console.log('hereX6')
+            //ret[i] = true;
+        }
+        console.log(ret);
+        // var context = this;
+        // for (var ds in this.dashboard.datasources) {
+        //     var nameArr = [];
+        //     for (var name in this.dashboard.datasources[ds].outputs) {
+        //         nameArr.push(this.dashboard.datasources[ds].id + "_" + name);
+        //     }
+
+        //     if (this.dashboard.datasources[ds].comms._resultNameCacheCount === 0) {
+        //         return false;
+        //     }
+        //     var loaded = nameArr.filter(function (item) {
+        //         if (typeof(context.dashboard.datasources[ds].comms._resultNameCache[item]) === "undefined" || typeof(context.dashboard.datasources[ds].comms._resultNameCache[item].filter) !== "function") {
+        //             return false;
+        //         } else {
+        //             return true;
+        //         }
+        //     });
+        //     return loaded.length === nameArr.length;
+        // }
+         return ret;
+    };
+
+    Marshaller.prototype.commsDataLoaded = function () {
+        var dashboardLoadedArr = [];
+        var i = 0;
+        this.dashboardArray.forEach(function(dashboard) {
+            for (var ds in dashboard.datasources) {
+                dashboardLoadedArr[i] = dashboard.datasources[ds].isLoaded;
+                i++;
+            }
+        });
+        return dashboardLoadedArr.every(function(element, index, array) {
+            return element === true;
+        });
+    }
     Marshaller.prototype.accept = function (visitor) {
         visitor.visit(this);
         this.dashboardTotal = 0;
