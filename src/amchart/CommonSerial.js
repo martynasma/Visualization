@@ -163,7 +163,13 @@
         var context = this;
         var gObj = {};
 
-        gObj.balloonText = context.tooltipTemplate();
+        gObj.balloonFunction = function(d) {
+            //console.log(d);
+            //console.log(d.category);
+
+            return "bob";
+        }
+        //gObj.balloonText = context.tooltipTemplate();
         gObj.lineAlpha = context.lineOpacity();
         gObj.lineColor = context.lineColor();
         gObj.lineThickness = context.lineWidth();
@@ -239,11 +245,17 @@
         }
         this._chart = AmCharts.makeChart(domNode, initObj);
         this._chart.addListener("clickGraphItem", function(e) {
+            
+            console.log(e);
+            e.item.dataContext.fill = "#0079DC"; //todo param for selection color?
+            e.chart.validateData();
+            
             context.click(context.rowToObj(context._data[e.index]), context._columns[e.target.columnIndex+1]);
         });
     };
 
     CommonSerial.prototype.update = function(domNode, element) {
+        console.log('here');
         HTMLWidget.prototype.update.apply(this, arguments);
         domNode.style.width = this.size().width + "px";
         domNode.style.height = this.size().height + "px";
