@@ -92,14 +92,16 @@ require.config({
                 params.WsWorkunits + '/WUInfo.json":"' + hostUrl + '/proxy-WUInfo.do","' +
                 params.WsEcl + '/submit/query/":"' + hostUrl + '/proxy-WsEcl.do"}');
 
-            require(["src/amchart/Area","src/marshaller/HTML", "src/other/Persist", "src/other/PropertyEditor", "src/form/Form"], function (Widget, HTMLMarshaller, Persist, PropertyEditor, Form)
+            require(["src/amchart/Area","src/marshaller/HTML", "src/other/Persist", "src/other/PropertyEditor", "src/form/Form"], function (Widget, HTMLMarshaller, Persist, PropertyEditor, Form) {
+
                 var parsedParams=$.parseJSON(params.layout);
                 console.log(parsedParams.LayoutText);
+
                 Persist.create(parsedParams.LayoutText, function(persistWidget) {
 
                     persistWidget.target('marshaller-wrapper')
-                            .ddlUrl(params.url)
-                            .proxyMappings(proxyMappings)
+                            .ddlUrl(params.url) // doesnt do anything
+                            .proxyMappings(proxyMappings) // doesnt do anything (harmful that is?)
                             .render(function () {
                                 //$('#'+target+' .z-apply-loading-indicator').remove();
                                 //currWidget[target] = persistWidget;
