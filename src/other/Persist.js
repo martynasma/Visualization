@@ -53,6 +53,17 @@
     }
 
     function widgetPropertyWalker(widget, filter, visitor) {
+        if (!widget) return;
+        var publishedProps = discover(widget);
+        for (var i = 0; i < publishedProps.length; ++i) {
+            var publishItem = publishedProps[i];
+            if (!(filter instanceof Array) || filter.length === 0 || filter.indexOf(publishItem.id) >= 0) {
+                if (visitor(widget, publishItem)) {
+                    continue;
+                }
+            }
+        }
+
         widgetWalker(widget, function(widget) {
             var publishedProps = discover(widget);
             for (var i = 0; i < publishedProps.length; ++i) {
@@ -72,29 +83,6 @@
         });
     }
 
-    // function widgetPropertyWalker(widget, filter, visitor) {
-    //     if (!widget) return;
-    //     var publishedProps = discover(widget);
-    //     for (var i = 0; i < publishedProps.length; ++i) {
-    //         var publishItem = publishedProps[i];
-    //         if (!(filter instanceof Array) || filter.length === 0 || filter.indexOf(publishItem.id) >= 0) {
-    //             if (visitor(widget, publishItem)) {
-    //                 continue;
-    //             }
-    //         }
-    //         switch (publishItem.type) {
-    //             case "widget":
-    //                 widgetPropertyWalker(widget[publishItem.id](), filter, visitor);
-    //                 break;
-    //             case "widgetArray":
-    //                 var widgetArray = widget[publishItem.id]();
-    //                 widgetArray.forEach(function (widget) {
-    //                     widgetPropertyWalker(widget, filter, visitor);
-    //                 });
-    //                 break;
-    //         }
-    //     }
-    // }
 
     return {
         discover: discover,
