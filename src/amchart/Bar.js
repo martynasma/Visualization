@@ -87,7 +87,7 @@
         for(var i = 0; i < buildGraphCount; i++) {
             if ((typeof(this._valueField) !== "undefined" && typeof(this._valueField[i]) !== "undefined")) { //mark
                 var gRetVal = CommonSerial.prototype.buildGraphObj.call(this,gType,i);
-                var gObj = buildGraphObj.call(this,gRetVal);
+                var gObj = buildGraphObj.call(this,gRetVal,i);
 
                 if (typeof(this._chart.graphs[i]) !== "undefined") {
                     for (var key in gObj) { this._chart.graphs[i][key] = gObj[key]; }
@@ -99,7 +99,7 @@
             }
         }
 
-        function buildGraphObj(gObj, i) {
+        function buildGraphObj(gObj, gRetVal, i) {
             if (this.columnWidth()) {
                 gObj.columnWidth = this.columnWidth();
             }
